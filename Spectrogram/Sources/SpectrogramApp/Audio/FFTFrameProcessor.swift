@@ -1,5 +1,6 @@
 import Accelerate
 import Foundation
+import SpectrogramCore
 
 final class FFTFrameProcessor {
     let sampleRate: Double

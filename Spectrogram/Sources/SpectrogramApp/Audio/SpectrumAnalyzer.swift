@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import SpectrogramCore
 
 enum SpectrumAnalyzerError: LocalizedError {
     case microphoneUnavailable
