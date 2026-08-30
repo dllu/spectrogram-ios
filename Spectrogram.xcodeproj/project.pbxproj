@@ -1,0 +1,714 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02710254E2969CD15137FB83 /* MetalSpectrogramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A5C400E04D48BF920994D /* MetalSpectrogramView.swift */; };
+		044A60E0D5B1867DBFDF5118 /* CapturePhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811F848E8E26005AB6A78AEC /* CapturePhase.swift */; };
+		192013CD8FB0AB5FC0287B97 /* SpectrogramApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31E920DCF182544ECF9C32A /* SpectrogramApp.swift */; };
+		21C6ADB61C047C43D2133100 /* SpectrogramRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951A766085C09FDD3BDD3675 /* SpectrogramRenderer.swift */; };
+		2269135458AA2418F55DD1F2 /* AudioSampleRingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC996B0DD62BA9112CEE9986 /* AudioSampleRingBuffer.swift */; };
+		23B0F4E3576E5E1766CD1588 /* SpectrumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443E63761FDA5A92A6851042 /* SpectrumDetailView.swift */; };
+		317EB7CF9AAE83D8F4800F7D /* SpectrumAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7C5400CDB36D962F02A9A7 /* SpectrumAnalyzer.swift */; };
+		36D3B1C9E1F4095CDD7D136D /* SpectrogramCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		413D100D211225A7DE1D4A72 /* SpectrogramShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 998A79105153061538063DD5 /* SpectrogramShaders.metal */; };
+		44AB0BF4A1908A3EF8A45F74 /* FrequencyScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9026A9264922C0890FBB3E0 /* FrequencyScale.swift */; };
+		4905327AED75F6B32EE4A59F /* SpectrogramCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		58E85EFCF155D2A43FEA5673 /* SpectrogramCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */; };
+		68275ADF0563968A1798695D /* SpectralFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB12C477C04AB82C949A89C /* SpectralFrame.swift */; };
+		6AF3DF4A8014DDA83607D233 /* SpectrumSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B284E818805879FA50879B11 /* SpectrumSelection.swift */; };
+		77C1196420FF99EBCA48261D /* SpectrogramCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */; };
+		A7CEC8A1612FA6CBD71AF18F /* FrequencyScaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5119D46DD31C1B0700BD7CC6 /* FrequencyScaleTests.swift */; };
+		AF5DC24D8149DAE11C015F85 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFA07138E1352246252D8A0E /* ContentView.swift */; };
+		B58EDE295DCD3A30F342C988 /* FrequencyAxisOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D668E0381CA0A1B8B97C4E8 /* FrequencyAxisOverlay.swift */; };
+		BA591553B5D7CF9C02894150 /* ControlBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC07E8B17DA39C071DF52A61 /* ControlBar.swift */; };
+		BB03845786F1AE994A2AC642 /* PeakDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA4092F5BA5CC6638FDCDEE /* PeakDetectorTests.swift */; };
+		C033E736DB587CDD9214CBA2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 921E2C8A0B269967C2C533FD /* Assets.xcassets */; };
+		CE6ED5693E1858B2891EC413 /* FFTFrameProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED1DF6D16FEFCCC2E08857 /* FFTFrameProcessor.swift */; };
+		D5DEB02F29714169494407F4 /* SpectrogramPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49ECF1E956CD8027FC360E41 /* SpectrogramPane.swift */; };
+		D83B1D0A51FF79919C1877E4 /* SpectrumPlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A2F33D737EF56B4A20CAA66 /* SpectrumPlotView.swift */; };
+		DB8E7BD04E38A233A2E1189F /* SpectrogramSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCCFF54FB1F46A99782E826 /* SpectrogramSession.swift */; };
+		DFA864E5335DF4F3BAD18CE6 /* SpectrogramHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC639F6533A1DE03725B7CC /* SpectrogramHistoryTests.swift */; };
+		E5050B340D42714E220C213E /* SpectrogramHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B830B7D716849D6FD9FBC766 /* SpectrogramHistory.swift */; };
+		E8C2F2CCC5B0E79AB550E0F7 /* SpectrumPeak.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A4518AABAE668ECBF12F6 /* SpectrumPeak.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		56CFDEEDD30D3E79D374C763 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1A21C749D408DB9450138EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 74DA429D8CBE86E69ED58DFC;
+			remoteInfo = SpectrogramCore;
+		};
+		F2A7CB76DB957F516AE19EC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1A21C749D408DB9450138EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 74DA429D8CBE86E69ED58DFC;
+			remoteInfo = SpectrogramCore;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1BF925B67CA255DCFEE4435F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4905327AED75F6B32EE4A59F /* SpectrogramCore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF5E28802A0475AAAD380678 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				36D3B1C9E1F4095CDD7D136D /* SpectrogramCore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		01B4922DA274D09D33BFBD56 /* SpectrogramCoreTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SpectrogramCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E7C5400CDB36D962F02A9A7 /* SpectrumAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumAnalyzer.swift; sourceTree = "<group>"; };
+		24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SpectrogramCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2AA4092F5BA5CC6638FDCDEE /* PeakDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeakDetectorTests.swift; sourceTree = "<group>"; };
+		2FED1DF6D16FEFCCC2E08857 /* FFTFrameProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFTFrameProcessor.swift; sourceTree = "<group>"; };
+		443E63761FDA5A92A6851042 /* SpectrumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumDetailView.swift; sourceTree = "<group>"; };
+		49ECF1E956CD8027FC360E41 /* SpectrogramPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramPane.swift; sourceTree = "<group>"; };
+		4D668E0381CA0A1B8B97C4E8 /* FrequencyAxisOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyAxisOverlay.swift; sourceTree = "<group>"; };
+		5119D46DD31C1B0700BD7CC6 /* FrequencyScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyScaleTests.swift; sourceTree = "<group>"; };
+		579BB292B83B97F6B3252F95 /* Spectrogram.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Spectrogram.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A2F33D737EF56B4A20CAA66 /* SpectrumPlotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumPlotView.swift; sourceTree = "<group>"; };
+		6BB12C477C04AB82C949A89C /* SpectralFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectralFrame.swift; sourceTree = "<group>"; };
+		6FC639F6533A1DE03725B7CC /* SpectrogramHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramHistoryTests.swift; sourceTree = "<group>"; };
+		811F848E8E26005AB6A78AEC /* CapturePhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturePhase.swift; sourceTree = "<group>"; };
+		921E2C8A0B269967C2C533FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		951A766085C09FDD3BDD3675 /* SpectrogramRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramRenderer.swift; sourceTree = "<group>"; };
+		998A79105153061538063DD5 /* SpectrogramShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SpectrogramShaders.metal; sourceTree = "<group>"; };
+		B284E818805879FA50879B11 /* SpectrumSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumSelection.swift; sourceTree = "<group>"; };
+		B830B7D716849D6FD9FBC766 /* SpectrogramHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramHistory.swift; sourceTree = "<group>"; };
+		C31E920DCF182544ECF9C32A /* SpectrogramApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramApp.swift; sourceTree = "<group>"; };
+		C63A4518AABAE668ECBF12F6 /* SpectrumPeak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumPeak.swift; sourceTree = "<group>"; };
+		CC996B0DD62BA9112CEE9986 /* AudioSampleRingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSampleRingBuffer.swift; sourceTree = "<group>"; };
+		CCCCFF54FB1F46A99782E826 /* SpectrogramSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramSession.swift; sourceTree = "<group>"; };
+		CFA07138E1352246252D8A0E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D9026A9264922C0890FBB3E0 /* FrequencyScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyScale.swift; sourceTree = "<group>"; };
+		E42A5C400E04D48BF920994D /* MetalSpectrogramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalSpectrogramView.swift; sourceTree = "<group>"; };
+		EC07E8B17DA39C071DF52A61 /* ControlBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBar.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2F85C6697E2755D0E9D80946 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58E85EFCF155D2A43FEA5673 /* SpectrogramCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE8C14F5F1B24C8DE8A51A70 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				77C1196420FF99EBCA48261D /* SpectrogramCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		15FE4C9C6E367CE4637385F6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CFA07138E1352246252D8A0E /* ContentView.swift */,
+				EC07E8B17DA39C071DF52A61 /* ControlBar.swift */,
+				4D668E0381CA0A1B8B97C4E8 /* FrequencyAxisOverlay.swift */,
+				49ECF1E956CD8027FC360E41 /* SpectrogramPane.swift */,
+				443E63761FDA5A92A6851042 /* SpectrumDetailView.swift */,
+				5A2F33D737EF56B4A20CAA66 /* SpectrumPlotView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5F4495B5D3D9D974F5EA4593 /* Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				E42A5C400E04D48BF920994D /* MetalSpectrogramView.swift */,
+				951A766085C09FDD3BDD3675 /* SpectrogramRenderer.swift */,
+				998A79105153061538063DD5 /* SpectrogramShaders.metal */,
+			);
+			path = Rendering;
+			sourceTree = "<group>";
+		};
+		6D1ABB4B2639ED5E36625909 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				811F848E8E26005AB6A78AEC /* CapturePhase.swift */,
+				CCCCFF54FB1F46A99782E826 /* SpectrogramSession.swift */,
+				B284E818805879FA50879B11 /* SpectrumSelection.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		7615E8A6DF1AB623E9018E7E = {
+			isa = PBXGroup;
+			children = (
+				AEC242A29B9ADC793D27A84C /* Spectrogram */,
+				C063FFE30771D2894B4FE713 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A06D8ECB163FFCCB16AB0692 /* SpectrogramCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				5119D46DD31C1B0700BD7CC6 /* FrequencyScaleTests.swift */,
+				2AA4092F5BA5CC6638FDCDEE /* PeakDetectorTests.swift */,
+				6FC639F6533A1DE03725B7CC /* SpectrogramHistoryTests.swift */,
+			);
+			path = SpectrogramCoreTests;
+			sourceTree = "<group>";
+		};
+		AEC242A29B9ADC793D27A84C /* Spectrogram */ = {
+			isa = PBXGroup;
+			children = (
+				B861E6BE85B9E132704DE8AB /* Resources */,
+				E35EF46529EEABD2D9EC5787 /* Sources */,
+				F47832AA9C473A2FDD8464CD /* Tests */,
+			);
+			path = Spectrogram;
+			sourceTree = "<group>";
+		};
+		B861E6BE85B9E132704DE8AB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				921E2C8A0B269967C2C533FD /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C063FFE30771D2894B4FE713 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				579BB292B83B97F6B3252F95 /* Spectrogram.app */,
+				24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */,
+				01B4922DA274D09D33BFBD56 /* SpectrogramCoreTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DE802013603C967F9CB32100 /* SpectrogramCore */ = {
+			isa = PBXGroup;
+			children = (
+				D9026A9264922C0890FBB3E0 /* FrequencyScale.swift */,
+				6BB12C477C04AB82C949A89C /* SpectralFrame.swift */,
+				B830B7D716849D6FD9FBC766 /* SpectrogramHistory.swift */,
+				C63A4518AABAE668ECBF12F6 /* SpectrumPeak.swift */,
+			);
+			path = SpectrogramCore;
+			sourceTree = "<group>";
+		};
+		E35EF46529EEABD2D9EC5787 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FF14D881E41C0D0753261B42 /* SpectrogramApp */,
+				DE802013603C967F9CB32100 /* SpectrogramCore */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		F47832AA9C473A2FDD8464CD /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				A06D8ECB163FFCCB16AB0692 /* SpectrogramCoreTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		FEFE435CBE3F81ACE77B2D7B /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				CC996B0DD62BA9112CEE9986 /* AudioSampleRingBuffer.swift */,
+				2FED1DF6D16FEFCCC2E08857 /* FFTFrameProcessor.swift */,
+				1E7C5400CDB36D962F02A9A7 /* SpectrumAnalyzer.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		FF14D881E41C0D0753261B42 /* SpectrogramApp */ = {
+			isa = PBXGroup;
+			children = (
+				C31E920DCF182544ECF9C32A /* SpectrogramApp.swift */,
+				FEFE435CBE3F81ACE77B2D7B /* Audio */,
+				6D1ABB4B2639ED5E36625909 /* Model */,
+				5F4495B5D3D9D974F5EA4593 /* Rendering */,
+				15FE4C9C6E367CE4637385F6 /* Views */,
+			);
+			path = SpectrogramApp;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		44789C66275A5E581CC1C8A0 /* Spectrogram */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 76B95FD85518AA3CBDCBD1DE /* Build configuration list for PBXNativeTarget "Spectrogram" */;
+			buildPhases = (
+				143675E92C00E42BD27B2CCE /* Sources */,
+				B33DBAEDDA81A430EE5397F1 /* Resources */,
+				EE8C14F5F1B24C8DE8A51A70 /* Frameworks */,
+				1BF925B67CA255DCFEE4435F /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				793BB3DB8EB299DFCAE65B2B /* PBXTargetDependency */,
+			);
+			name = Spectrogram;
+			packageProductDependencies = (
+			);
+			productName = Spectrogram;
+			productReference = 579BB292B83B97F6B3252F95 /* Spectrogram.app */;
+			productType = "com.apple.product-type.application";
+		};
+		74DA429D8CBE86E69ED58DFC /* SpectrogramCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FE1B9DAD2AEDBBA39EB63D6A /* Build configuration list for PBXNativeTarget "SpectrogramCore" */;
+			buildPhases = (
+				4C743A4BF04D03736AEFB403 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SpectrogramCore;
+			packageProductDependencies = (
+			);
+			productName = SpectrogramCore;
+			productReference = 24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		BC66BCD475CC22DD71922A34 /* SpectrogramCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 292D765714D7574C6F9DCED5 /* Build configuration list for PBXNativeTarget "SpectrogramCoreTests" */;
+			buildPhases = (
+				4ED687D39C0EF19E26724E85 /* Sources */,
+				2F85C6697E2755D0E9D80946 /* Frameworks */,
+				CF5E28802A0475AAAD380678 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7C91018E986BE6449F761E88 /* PBXTargetDependency */,
+			);
+			name = SpectrogramCoreTests;
+			packageProductDependencies = (
+			);
+			productName = SpectrogramCoreTests;
+			productReference = 01B4922DA274D09D33BFBD56 /* SpectrogramCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F1A21C749D408DB9450138EC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					44789C66275A5E581CC1C8A0 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 87D2048727E7374DD322964D /* Build configuration list for PBXProject "Spectrogram" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 7615E8A6DF1AB623E9018E7E;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C063FFE30771D2894B4FE713 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				74DA429D8CBE86E69ED58DFC /* SpectrogramCore */,
+				44789C66275A5E581CC1C8A0 /* Spectrogram */,
+				BC66BCD475CC22DD71922A34 /* SpectrogramCoreTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B33DBAEDDA81A430EE5397F1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C033E736DB587CDD9214CBA2 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		143675E92C00E42BD27B2CCE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2269135458AA2418F55DD1F2 /* AudioSampleRingBuffer.swift in Sources */,
+				044A60E0D5B1867DBFDF5118 /* CapturePhase.swift in Sources */,
+				AF5DC24D8149DAE11C015F85 /* ContentView.swift in Sources */,
+				BA591553B5D7CF9C02894150 /* ControlBar.swift in Sources */,
+				CE6ED5693E1858B2891EC413 /* FFTFrameProcessor.swift in Sources */,
+				B58EDE295DCD3A30F342C988 /* FrequencyAxisOverlay.swift in Sources */,
+				02710254E2969CD15137FB83 /* MetalSpectrogramView.swift in Sources */,
+				192013CD8FB0AB5FC0287B97 /* SpectrogramApp.swift in Sources */,
+				D5DEB02F29714169494407F4 /* SpectrogramPane.swift in Sources */,
+				21C6ADB61C047C43D2133100 /* SpectrogramRenderer.swift in Sources */,
+				DB8E7BD04E38A233A2E1189F /* SpectrogramSession.swift in Sources */,
+				413D100D211225A7DE1D4A72 /* SpectrogramShaders.metal in Sources */,
+				317EB7CF9AAE83D8F4800F7D /* SpectrumAnalyzer.swift in Sources */,
+				23B0F4E3576E5E1766CD1588 /* SpectrumDetailView.swift in Sources */,
+				D83B1D0A51FF79919C1877E4 /* SpectrumPlotView.swift in Sources */,
+				6AF3DF4A8014DDA83607D233 /* SpectrumSelection.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4C743A4BF04D03736AEFB403 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				44AB0BF4A1908A3EF8A45F74 /* FrequencyScale.swift in Sources */,
+				68275ADF0563968A1798695D /* SpectralFrame.swift in Sources */,
+				E5050B340D42714E220C213E /* SpectrogramHistory.swift in Sources */,
+				E8C2F2CCC5B0E79AB550E0F7 /* SpectrumPeak.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4ED687D39C0EF19E26724E85 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A7CEC8A1612FA6CBD71AF18F /* FrequencyScaleTests.swift in Sources */,
+				BB03845786F1AE994A2AC642 /* PeakDetectorTests.swift in Sources */,
+				DFA864E5335DF4F3BAD18CE6 /* SpectrogramHistoryTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		793BB3DB8EB299DFCAE65B2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 74DA429D8CBE86E69ED58DFC /* SpectrogramCore */;
+			targetProxy = F2A7CB76DB957F516AE19EC8 /* PBXContainerItemProxy */;
+		};
+		7C91018E986BE6449F761E88 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 74DA429D8CBE86E69ED58DFC /* SpectrogramCore */;
+			targetProxy = 56CFDEEDD30D3E79D374C763 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0A8337978D043BD08AD5A3BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		25E406FF5DE1D8BE978EEFB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dllu.spectrogram.core-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		43012566F3DC28A4187EF1BA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4BD390E09085B115AD7BD8F5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Spectrogram/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dllu.spectrogram;
+				PRODUCT_NAME = Spectrogram;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		5A9E086C7CF5CE81803E359D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dllu.spectrogram.core;
+				PRODUCT_NAME = SpectrogramCore;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		7830548987332FFE4C7F313A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dllu.spectrogram.core;
+				PRODUCT_NAME = SpectrogramCore;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		A3F260DC0390006DE8A407E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dllu.spectrogram.core-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A6F03CA2BA867B84FF6D18BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Spectrogram/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dllu.spectrogram;
+				PRODUCT_NAME = Spectrogram;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		292D765714D7574C6F9DCED5 /* Build configuration list for PBXNativeTarget "SpectrogramCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				25E406FF5DE1D8BE978EEFB9 /* Debug */,
+				A3F260DC0390006DE8A407E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		76B95FD85518AA3CBDCBD1DE /* Build configuration list for PBXNativeTarget "Spectrogram" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6F03CA2BA867B84FF6D18BF /* Debug */,
+				4BD390E09085B115AD7BD8F5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		87D2048727E7374DD322964D /* Build configuration list for PBXProject "Spectrogram" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43012566F3DC28A4187EF1BA /* Debug */,
+				0A8337978D043BD08AD5A3BB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FE1B9DAD2AEDBBA39EB63D6A /* Build configuration list for PBXNativeTarget "SpectrogramCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7830548987332FFE4C7F313A /* Debug */,
+				5A9E086C7CF5CE81803E359D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F1A21C749D408DB9450138EC /* Project object */;
+}

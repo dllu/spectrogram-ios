@@ -1,0 +1,208 @@
+import AVFoundation
+import Combine
+import Foundation
+import SpectrogramCore
+
+@MainActor
+final class SpectrogramSession: ObservableObject {
+    static let historyCapacity = 1_024
+
+    let history = SpectrogramHistory(capacity: historyCapacity)
+
+    @Published private(set) var phase: CapturePhase = .idle
+    @Published private(set) var latestPeak: SpectrumPeak?
+    @Published private(set) var framesCaptured = 0
+    @Published var selection: SpectrumSelection?
+
+    private let analyzer = SpectrumAnalyzer()
+    private var notificationTokens: [NSObjectProtocol] = []
+    private var lastPublishedTimestamp = -Double.infinity
+    private var wasRunningBeforeInterruption = false
+    private var shouldResumeWhenActive = false
+
+    init() {
+        analyzer.onFrame = { [weak self] frame in
+            guard let self else { return }
+            let storedFrame = self.history.append(frame)
+
+            // Audio frames arrive around 47 times per second. Updating labels at 10 Hz
+            // keeps SwiftUI work small while Metal consumes every frame independently.
+            guard storedFrame.timestamp - self.lastPublishedTimestamp >= 0.1 else { return }
+            self.lastPublishedTimestamp = storedFrame.timestamp
+            let peak = PeakDetector.strongestPeak(
+                in: storedFrame,
+                maximumFrequency: FrequencyScale.displayMaximum(nyquist: storedFrame.nyquistFrequency)
+            )
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.latestPeak = peak
+                self.framesCaptured = self.history.count
+            }
+        }
+
+        observeAudioEvents()
+    }
+
+    deinit {
+        for token in notificationTokens {
+            NotificationCenter.default.removeObserver(token)
+        }
+    }
+
+    func startIfNeeded() {
+        guard phase == .idle || phase == .permissionDenied else { return }
+
+        switch AVAudioSession.sharedInstance().recordPermission {
+        case .granted:
+            startCapture()
+        case .denied:
+            phase = .permissionDenied
+        case .undetermined:
+            phase = .requestingPermission
+            AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
+                DispatchQueue.main.async {
+                    guard let self else { return }
+                    if granted {
+                        self.startCapture()
+                    } else {
+                        self.phase = .permissionDenied
+                    }
+                }
+            }
+        @unknown default:
+            phase = .permissionDenied
+        }
+    }
+
+    func toggleCapture() {
+        if phase.isCapturing {
+            pause()
+        } else {
+            resume()
+        }
+    }
+
+    func pause() {
+        guard phase == .running else { return }
+        analyzer.pause()
+        phase = .paused
+    }
+
+    func resume() {
+        guard phase == .paused || phase == .interrupted || phase == .idle else { return }
+        startCapture()
+    }
+
+    func selectSlice(normalizedYFromTop y: Double) {
+        let clampedY = min(max(y, 0), 1)
+        guard let frame = history.frame(normalizedYFromTop: clampedY) else { return }
+
+        let maximum = FrequencyScale.displayMaximum(nyquist: frame.nyquistFrequency)
+        selection = SpectrumSelection(
+            frame: frame,
+            peak: PeakDetector.strongestPeak(in: frame, maximumFrequency: maximum),
+            tappedNormalizedY: clampedY
+        )
+
+        // Freezing the waterfall keeps the selected horizontal slice visually stable.
+        if phase == .running {
+            pause()
+        }
+    }
+
+    func selectPeak(normalizedX: Double) {
+        guard var selection else { return }
+        let maximum = FrequencyScale.displayMaximum(nyquist: selection.frame.nyquistFrequency)
+        let frequency = FrequencyScale.frequency(at: normalizedX, maximum: maximum)
+        selection.peak = PeakDetector.nearestPeak(
+            to: frequency,
+            in: selection.frame,
+            maximumFrequency: maximum
+        )
+        self.selection = selection
+    }
+
+    func dismissSelection() {
+        selection = nil
+    }
+
+    func clearHistory() {
+        history.clear()
+        framesCaptured = 0
+        latestPeak = nil
+        selection = nil
+    }
+
+    func handleSceneActive(_ isActive: Bool) {
+        if !isActive, phase == .running {
+            shouldResumeWhenActive = true
+            pause()
+        } else if isActive, shouldResumeWhenActive {
+            shouldResumeWhenActive = false
+            resume()
+        }
+    }
+
+    func ageDescription(for frame: SpectralFrame) -> String {
+        guard let latest = history.latest() else { return "Selected slice" }
+        let age = max(0, latest.timestamp - frame.timestamp)
+        if age < 0.05 {
+            return "Newest slice"
+        }
+        return String(format: "%.1f s ago", age)
+    }
+
+    private func startCapture() {
+        do {
+            try analyzer.start()
+            phase = .running
+        } catch {
+            phase = .failed(error.localizedDescription)
+        }
+    }
+
+    private func observeAudioEvents() {
+        let interruptionToken = NotificationCenter.default.addObserver(
+            forName: AVAudioSession.interruptionNotification,
+            object: AVAudioSession.sharedInstance(),
+            queue: .main
+        ) { [weak self] notification in
+            guard let self,
+                  let rawType = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+                  let type = AVAudioSession.InterruptionType(rawValue: rawType) else { return }
+            Task { @MainActor in
+                switch type {
+                case .began:
+                    self.wasRunningBeforeInterruption = self.phase == .running
+                    self.analyzer.pause()
+                    self.phase = .interrupted
+                case .ended:
+                    let rawOptions = notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
+                    let options = AVAudioSession.InterruptionOptions(rawValue: rawOptions)
+                    if self.wasRunningBeforeInterruption, options.contains(.shouldResume) {
+                        self.startCapture()
+                    } else {
+                        self.phase = .paused
+                    }
+                    self.wasRunningBeforeInterruption = false
+                @unknown default:
+                    break
+                }
+            }
+        }
+        notificationTokens.append(interruptionToken)
+
+        let routeToken = NotificationCenter.default.addObserver(
+            forName: AVAudioSession.routeChangeNotification,
+            object: AVAudioSession.sharedInstance(),
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.phase == .running else { return }
+                self.analyzer.stop()
+                self.startCapture()
+            }
+        }
+        notificationTokens.append(routeToken)
+    }
+}

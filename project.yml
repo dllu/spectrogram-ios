@@ -1,0 +1,77 @@
+name: Spectrogram
+
+options:
+  bundleIdPrefix: com.dllu
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    CLANG_ENABLE_MODULES: YES
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+
+targets:
+  SpectrogramCore:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Spectrogram/Sources/SpectrogramCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dllu.spectrogram.core
+        PRODUCT_NAME: SpectrogramCore
+        DEFINES_MODULE: YES
+        SKIP_INSTALL: YES
+
+  Spectrogram:
+    type: application
+    platform: iOS
+    sources:
+      - path: Spectrogram/Sources/SpectrogramApp
+      - path: Spectrogram/Resources/Assets.xcassets
+    dependencies:
+      - target: SpectrogramCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dllu.spectrogram
+        PRODUCT_NAME: Spectrogram
+        INFOPLIST_FILE: Spectrogram/Resources/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 1.0
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_PREVIEWS: YES
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: "1,2"
+
+  SpectrogramCoreTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Spectrogram/Tests/SpectrogramCoreTests
+    dependencies:
+      - target: SpectrogramCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dllu.spectrogram.core-tests
+
+schemes:
+  Spectrogram:
+    build:
+      targets:
+        Spectrogram: all
+        SpectrogramCore: [test]
+        SpectrogramCoreTests: [test]
+    test:
+      gatherCoverageData: true
+      targets:
+        - SpectrogramCoreTests
+    run:
+      config: Debug
+    archive:
+      config: Release
