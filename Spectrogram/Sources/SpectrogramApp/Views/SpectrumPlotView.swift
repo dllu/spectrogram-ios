@@ -34,6 +34,7 @@ struct SpectrumPlotView: View {
         .accessibilityLabel("Intensity by frequency")
         .accessibilityValue(accessibilityValue)
         .accessibilityHint("Tap near a frequency to select its nearest peak")
+        .accessibilityIdentifier("spectrum-plot")
     }
 
     private var maximumFrequency: Double {

@@ -60,6 +60,28 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.dllu.spectrogram.core-tests
 
+  SpectrogramAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Spectrogram/Tests/SpectrogramAppTests
+    dependencies:
+      - target: Spectrogram
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dllu.spectrogram.app-tests
+
+  SpectrogramUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: Spectrogram/Tests/SpectrogramUITests
+    dependencies:
+      - target: Spectrogram
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dllu.spectrogram.ui-tests
+
 schemes:
   Spectrogram:
     build:
@@ -67,10 +89,14 @@ schemes:
         Spectrogram: all
         SpectrogramCore: [test]
         SpectrogramCoreTests: [test]
+        SpectrogramAppTests: [test]
+        SpectrogramUITests: [test]
     test:
       gatherCoverageData: true
       targets:
         - SpectrogramCoreTests
+        - SpectrogramAppTests
+        - SpectrogramUITests
     run:
       config: Debug
     archive:

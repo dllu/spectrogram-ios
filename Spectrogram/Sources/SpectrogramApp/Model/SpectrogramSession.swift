@@ -15,12 +15,19 @@ final class SpectrogramSession: ObservableObject {
     @Published var selection: SpectrumSelection?
 
     private let analyzer = SpectrumAnalyzer()
+    private let isUITesting: Bool
     private var notificationTokens: [NSObjectProtocol] = []
     private var lastPublishedTimestamp = -Double.infinity
     private var wasRunningBeforeInterruption = false
     private var shouldResumeWhenActive = false
+    private var isRestartingForRouteChange = false
 
     init() {
+#if DEBUG
+        isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+#else
+        isUITesting = false
+#endif
         analyzer.onFrame = { [weak self] frame in
             guard let self else { return }
             let storedFrame = self.history.append(frame)
@@ -40,7 +47,9 @@ final class SpectrogramSession: ObservableObject {
             }
         }
 
-        observeAudioEvents()
+        if !isUITesting {
+            observeAudioEvents()
+        }
     }
 
     deinit {
@@ -51,6 +60,12 @@ final class SpectrogramSession: ObservableObject {
 
     func startIfNeeded() {
         guard phase == .idle || phase == .permissionDenied else { return }
+
+        if isUITesting {
+            loadUITestHistory()
+            phase = .paused
+            return
+        }
 
         switch AVAudioSession.sharedInstance().recordPermission {
         case .granted:
@@ -75,6 +90,10 @@ final class SpectrogramSession: ObservableObject {
     }
 
     func toggleCapture() {
+        if isUITesting {
+            phase = phase.isCapturing ? .paused : .running
+            return
+        }
         if phase.isCapturing {
             pause()
         } else {
@@ -84,12 +103,18 @@ final class SpectrogramSession: ObservableObject {
 
     func pause() {
         guard phase == .running else { return }
-        analyzer.pause()
+        if !isUITesting {
+            analyzer.pause()
+        }
         phase = .paused
     }
 
     func resume() {
         guard phase == .paused || phase == .interrupted || phase == .idle else { return }
+        if isUITesting {
+            phase = .running
+            return
+        }
         startCapture()
     }
 
@@ -161,6 +186,42 @@ final class SpectrogramSession: ObservableObject {
         }
     }
 
+    private func loadUITestHistory() {
+        guard history.count == 0 else { return }
+
+        let sampleRate = 48_000.0
+        let fftSize = 4_096
+        let binCount = fftSize / 2
+        let timeStep = 1_024.0 / sampleRate
+
+        for row in 0..<320 {
+            var magnitudes = [Float](repeating: -110, count: binCount)
+            for bin in 0..<binCount {
+                let frequency = Double(bin) * sampleRate / Double(fftSize)
+                let texture = -106.0 + 2.0 * sin(Double(bin) * 0.071 + Double(row) * 0.11)
+                let firstPeak = -23.0 - 0.025 * pow(frequency - 440, 2)
+                let secondPeak = -34.0 - 0.012 * pow(frequency - 1_000, 2)
+                magnitudes[bin] = Float(max(texture, firstPeak, secondPeak))
+            }
+            history.append(
+                SpectralFrame(
+                    timestamp: Double(row) * timeStep,
+                    sampleRate: sampleRate,
+                    fftSize: fftSize,
+                    magnitudesDB: magnitudes
+                )
+            )
+        }
+
+        framesCaptured = history.count
+        if let frame = history.latest() {
+            latestPeak = PeakDetector.strongestPeak(
+                in: frame,
+                maximumFrequency: FrequencyScale.defaultMaximum
+            )
+        }
+    }
+
     private func observeAudioEvents() {
         let interruptionToken = NotificationCenter.default.addObserver(
             forName: AVAudioSession.interruptionNotification,
@@ -196,11 +257,21 @@ final class SpectrogramSession: ObservableObject {
             forName: AVAudioSession.routeChangeNotification,
             object: AVAudioSession.sharedInstance(),
             queue: .main
-        ) { [weak self] _ in
+        ) { [weak self] notification in
             Task { @MainActor in
-                guard let self, self.phase == .running else { return }
+                guard let self,
+                      self.phase == .running,
+                      !self.isRestartingForRouteChange,
+                      let rawReason = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt,
+                      let reason = AVAudioSession.RouteChangeReason(rawValue: rawReason),
+                      reason != .categoryChange,
+                      reason != .override else { return }
+                self.isRestartingForRouteChange = true
                 self.analyzer.stop()
                 self.startCapture()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                    self?.isRestartingForRouteChange = false
+                }
             }
         }
         notificationTokens.append(routeToken)

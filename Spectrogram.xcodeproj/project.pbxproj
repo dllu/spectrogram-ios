@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		02710254E2969CD15137FB83 /* MetalSpectrogramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42A5C400E04D48BF920994D /* MetalSpectrogramView.swift */; };
 		044A60E0D5B1867DBFDF5118 /* CapturePhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811F848E8E26005AB6A78AEC /* CapturePhase.swift */; };
+		0B46F226F4140D3A947D310F /* SpectrogramUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA90AF8E91EAC42C4793C843 /* SpectrogramUITests.swift */; };
 		192013CD8FB0AB5FC0287B97 /* SpectrogramApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31E920DCF182544ECF9C32A /* SpectrogramApp.swift */; };
 		21C6ADB61C047C43D2133100 /* SpectrogramRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951A766085C09FDD3BDD3675 /* SpectrogramRenderer.swift */; };
 		2269135458AA2418F55DD1F2 /* AudioSampleRingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC996B0DD62BA9112CEE9986 /* AudioSampleRingBuffer.swift */; };
@@ -22,7 +23,9 @@
 		68275ADF0563968A1798695D /* SpectralFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB12C477C04AB82C949A89C /* SpectralFrame.swift */; };
 		6AF3DF4A8014DDA83607D233 /* SpectrumSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B284E818805879FA50879B11 /* SpectrumSelection.swift */; };
 		77C1196420FF99EBCA48261D /* SpectrogramCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */; };
+		80FC4B8A1B42BACD0C8CE3FB /* AudioSampleRingBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418871FB813312093C13B56 /* AudioSampleRingBufferTests.swift */; };
 		A7CEC8A1612FA6CBD71AF18F /* FrequencyScaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5119D46DD31C1B0700BD7CC6 /* FrequencyScaleTests.swift */; };
+		AEABA26FD19E539B10D29890 /* FFTFrameProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390333DF22487FE03AF1FEB4 /* FFTFrameProcessorTests.swift */; };
 		AF5DC24D8149DAE11C015F85 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFA07138E1352246252D8A0E /* ContentView.swift */; };
 		B58EDE295DCD3A30F342C988 /* FrequencyAxisOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D668E0381CA0A1B8B97C4E8 /* FrequencyAxisOverlay.swift */; };
 		BA591553B5D7CF9C02894150 /* ControlBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC07E8B17DA39C071DF52A61 /* ControlBar.swift */; };
@@ -38,12 +41,26 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0AEC518668785C17B5933A93 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1A21C749D408DB9450138EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 44789C66275A5E581CC1C8A0;
+			remoteInfo = Spectrogram;
+		};
 		56CFDEEDD30D3E79D374C763 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F1A21C749D408DB9450138EC /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 74DA429D8CBE86E69ED58DFC;
 			remoteInfo = SpectrogramCore;
+		};
+		7B3DCF6CB9B447F847450F2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1A21C749D408DB9450138EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 44789C66275A5E581CC1C8A0;
+			remoteInfo = Spectrogram;
 		};
 		F2A7CB76DB957F516AE19EC8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -81,14 +98,18 @@
 
 /* Begin PBXFileReference section */
 		01B4922DA274D09D33BFBD56 /* SpectrogramCoreTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SpectrogramCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		06BAE71C177E44B96E21CAAB /* SpectrogramUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SpectrogramUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C747E2E39E5C8629F8166BB /* SpectrogramAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SpectrogramAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E7C5400CDB36D962F02A9A7 /* SpectrumAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumAnalyzer.swift; sourceTree = "<group>"; };
 		24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SpectrogramCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2AA4092F5BA5CC6638FDCDEE /* PeakDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeakDetectorTests.swift; sourceTree = "<group>"; };
 		2FED1DF6D16FEFCCC2E08857 /* FFTFrameProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFTFrameProcessor.swift; sourceTree = "<group>"; };
+		390333DF22487FE03AF1FEB4 /* FFTFrameProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFTFrameProcessorTests.swift; sourceTree = "<group>"; };
 		443E63761FDA5A92A6851042 /* SpectrumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumDetailView.swift; sourceTree = "<group>"; };
 		49ECF1E956CD8027FC360E41 /* SpectrogramPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramPane.swift; sourceTree = "<group>"; };
 		4D668E0381CA0A1B8B97C4E8 /* FrequencyAxisOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyAxisOverlay.swift; sourceTree = "<group>"; };
 		5119D46DD31C1B0700BD7CC6 /* FrequencyScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyScaleTests.swift; sourceTree = "<group>"; };
+		5418871FB813312093C13B56 /* AudioSampleRingBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSampleRingBufferTests.swift; sourceTree = "<group>"; };
 		579BB292B83B97F6B3252F95 /* Spectrogram.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Spectrogram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A2F33D737EF56B4A20CAA66 /* SpectrumPlotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumPlotView.swift; sourceTree = "<group>"; };
 		6BB12C477C04AB82C949A89C /* SpectralFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectralFrame.swift; sourceTree = "<group>"; };
@@ -97,6 +118,7 @@
 		921E2C8A0B269967C2C533FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		951A766085C09FDD3BDD3675 /* SpectrogramRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramRenderer.swift; sourceTree = "<group>"; };
 		998A79105153061538063DD5 /* SpectrogramShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SpectrogramShaders.metal; sourceTree = "<group>"; };
+		AA90AF8E91EAC42C4793C843 /* SpectrogramUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramUITests.swift; sourceTree = "<group>"; };
 		B284E818805879FA50879B11 /* SpectrumSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumSelection.swift; sourceTree = "<group>"; };
 		B830B7D716849D6FD9FBC766 /* SpectrogramHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramHistory.swift; sourceTree = "<group>"; };
 		C31E920DCF182544ECF9C32A /* SpectrogramApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramApp.swift; sourceTree = "<group>"; };
@@ -142,6 +164,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		40C2F9CC4B048960E1FC59D7 /* SpectrogramAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				5418871FB813312093C13B56 /* AudioSampleRingBufferTests.swift */,
+				390333DF22487FE03AF1FEB4 /* FFTFrameProcessorTests.swift */,
+			);
+			path = SpectrogramAppTests;
+			sourceTree = "<group>";
+		};
 		5F4495B5D3D9D974F5EA4593 /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +199,14 @@
 				AEC242A29B9ADC793D27A84C /* Spectrogram */,
 				C063FFE30771D2894B4FE713 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		7A2FE4F4735B6631EE9F29A9 /* SpectrogramUITests */ = {
+			isa = PBXGroup;
+			children = (
+				AA90AF8E91EAC42C4793C843 /* SpectrogramUITests.swift */,
+			);
+			path = SpectrogramUITests;
 			sourceTree = "<group>";
 		};
 		A06D8ECB163FFCCB16AB0692 /* SpectrogramCoreTests */ = {
@@ -202,8 +241,10 @@
 			isa = PBXGroup;
 			children = (
 				579BB292B83B97F6B3252F95 /* Spectrogram.app */,
+				1C747E2E39E5C8629F8166BB /* SpectrogramAppTests.xctest */,
 				24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */,
 				01B4922DA274D09D33BFBD56 /* SpectrogramCoreTests.xctest */,
+				06BAE71C177E44B96E21CAAB /* SpectrogramUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -231,7 +272,9 @@
 		F47832AA9C473A2FDD8464CD /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				40C2F9CC4B048960E1FC59D7 /* SpectrogramAppTests */,
 				A06D8ECB163FFCCB16AB0692 /* SpectrogramCoreTests */,
+				7A2FE4F4735B6631EE9F29A9 /* SpectrogramUITests */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -261,6 +304,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2F6285D6D4D68937F7A74FCC /* SpectrogramUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88C1B959DD3A749947624F6A /* Build configuration list for PBXNativeTarget "SpectrogramUITests" */;
+			buildPhases = (
+				DD20E58E5634718CEF89A960 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81DCC7FE1BFC5FDB85CADCF1 /* PBXTargetDependency */,
+			);
+			name = SpectrogramUITests;
+			packageProductDependencies = (
+			);
+			productName = SpectrogramUITests;
+			productReference = 06BAE71C177E44B96E21CAAB /* SpectrogramUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		44789C66275A5E581CC1C8A0 /* Spectrogram */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 76B95FD85518AA3CBDCBD1DE /* Build configuration list for PBXNativeTarget "Spectrogram" */;
@@ -299,6 +360,24 @@
 			productReference = 24037ADAA957ADBF65D3F5C8 /* SpectrogramCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		9E5BBD84AA11170793E6A4C2 /* SpectrogramAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4E5065F383B3704EDCBA50E7 /* Build configuration list for PBXNativeTarget "SpectrogramAppTests" */;
+			buildPhases = (
+				2E651E9E91709069FC228124 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9407FA4BA274997235F8CD04 /* PBXTargetDependency */,
+			);
+			name = SpectrogramAppTests;
+			packageProductDependencies = (
+			);
+			productName = SpectrogramAppTests;
+			productReference = 1C747E2E39E5C8629F8166BB /* SpectrogramAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		BC66BCD475CC22DD71922A34 /* SpectrogramCoreTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 292D765714D7574C6F9DCED5 /* Build configuration list for PBXNativeTarget "SpectrogramCoreTests" */;
@@ -328,6 +407,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					2F6285D6D4D68937F7A74FCC = {
+						TestTargetID = 44789C66275A5E581CC1C8A0;
+					};
 					44789C66275A5E581CC1C8A0 = {
 						ProvisioningStyle = Automatic;
 					};
@@ -350,6 +432,8 @@
 				74DA429D8CBE86E69ED58DFC /* SpectrogramCore */,
 				44789C66275A5E581CC1C8A0 /* Spectrogram */,
 				BC66BCD475CC22DD71922A34 /* SpectrogramCoreTests */,
+				9E5BBD84AA11170793E6A4C2 /* SpectrogramAppTests */,
+				2F6285D6D4D68937F7A74FCC /* SpectrogramUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -389,6 +473,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2E651E9E91709069FC228124 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80FC4B8A1B42BACD0C8CE3FB /* AudioSampleRingBufferTests.swift in Sources */,
+				AEABA26FD19E539B10D29890 /* FFTFrameProcessorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4C743A4BF04D03736AEFB403 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -410,6 +503,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DD20E58E5634718CEF89A960 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B46F226F4140D3A947D310F /* SpectrogramUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -422,6 +523,16 @@
 			isa = PBXTargetDependency;
 			target = 74DA429D8CBE86E69ED58DFC /* SpectrogramCore */;
 			targetProxy = 56CFDEEDD30D3E79D374C763 /* PBXContainerItemProxy */;
+		};
+		81DCC7FE1BFC5FDB85CADCF1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 44789C66275A5E581CC1C8A0 /* Spectrogram */;
+			targetProxy = 7B3DCF6CB9B447F847450F2B /* PBXContainerItemProxy */;
+		};
+		9407FA4BA274997235F8CD04 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 44789C66275A5E581CC1C8A0 /* Spectrogram */;
+			targetProxy = 0AEC518668785C17B5933A93 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -631,6 +742,22 @@
 			};
 			name = Debug;
 		};
+		8036FC53C29CFA2B1F61BA87 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dllu.spectrogram.app-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Spectrogram.app/Spectrogram";
+			};
+			name = Release;
+		};
 		A3F260DC0390006DE8A407E8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -669,6 +796,54 @@
 			};
 			name = Debug;
 		};
+		C620C0F07DC58A051899A69F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dllu.spectrogram.ui-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Spectrogram;
+			};
+			name = Debug;
+		};
+		CB1018EF00BD4420D037CBCC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dllu.spectrogram.app-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Spectrogram.app/Spectrogram";
+			};
+			name = Debug;
+		};
+		F94574F7E644C4D5F9B311D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dllu.spectrogram.ui-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Spectrogram;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -677,6 +852,15 @@
 			buildConfigurations = (
 				25E406FF5DE1D8BE978EEFB9 /* Debug */,
 				A3F260DC0390006DE8A407E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4E5065F383B3704EDCBA50E7 /* Build configuration list for PBXNativeTarget "SpectrogramAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB1018EF00BD4420D037CBCC /* Debug */,
+				8036FC53C29CFA2B1F61BA87 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -695,6 +879,15 @@
 			buildConfigurations = (
 				43012566F3DC28A4187EF1BA /* Debug */,
 				0A8337978D043BD08AD5A3BB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		88C1B959DD3A749947624F6A /* Build configuration list for PBXNativeTarget "SpectrogramUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C620C0F07DC58A051899A69F /* Debug */,
+				F94574F7E644C4D5F9B311D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

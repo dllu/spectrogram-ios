@@ -29,6 +29,20 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "9E5BBD84AA11170793E6A4C2"
+               BuildableName = "SpectrogramAppTests.xctest"
+               BlueprintName = "SpectrogramAppTests"
+               ReferencedContainer = "container:Spectrogram.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "74DA429D8CBE86E69ED58DFC"
                BuildableName = "SpectrogramCore.framework"
                BlueprintName = "SpectrogramCore"
@@ -46,6 +60,20 @@
                BlueprintIdentifier = "BC66BCD475CC22DD71922A34"
                BuildableName = "SpectrogramCoreTests.xctest"
                BlueprintName = "SpectrogramCoreTests"
+               ReferencedContainer = "container:Spectrogram.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2F6285D6D4D68937F7A74FCC"
+               BuildableName = "SpectrogramUITests.xctest"
+               BlueprintName = "SpectrogramUITests"
                ReferencedContainer = "container:Spectrogram.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -76,6 +104,28 @@
                BlueprintIdentifier = "BC66BCD475CC22DD71922A34"
                BuildableName = "SpectrogramCoreTests.xctest"
                BlueprintName = "SpectrogramCoreTests"
+               ReferencedContainer = "container:Spectrogram.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "9E5BBD84AA11170793E6A4C2"
+               BuildableName = "SpectrogramAppTests.xctest"
+               BlueprintName = "SpectrogramAppTests"
+               ReferencedContainer = "container:Spectrogram.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2F6285D6D4D68937F7A74FCC"
+               BuildableName = "SpectrogramUITests.xctest"
+               BlueprintName = "SpectrogramUITests"
                ReferencedContainer = "container:Spectrogram.xcodeproj">
             </BuildableReference>
          </TestableReference>

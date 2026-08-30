@@ -40,6 +40,7 @@ struct ControlBar: View {
             .foregroundStyle(.secondary)
             .disabled(session.framesCaptured == 0)
             .accessibilityLabel("Clear spectrogram")
+            .accessibilityIdentifier("clear-history")
 
             Button {
                 session.toggleCapture()
@@ -52,6 +53,7 @@ struct ControlBar: View {
             .buttonStyle(.plain)
             .disabled(!canToggle)
             .accessibilityLabel(session.phase.isCapturing ? "Pause" : "Resume")
+            .accessibilityIdentifier("capture-toggle")
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)

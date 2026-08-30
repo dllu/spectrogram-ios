@@ -26,6 +26,7 @@ struct SpectrumDetailView: View {
                             .font(.system(.headline, design: .rounded, weight: .semibold))
                             .foregroundStyle(.cyan)
                             .monospacedDigit()
+                            .accessibilityIdentifier("selected-peak-frequency")
                         Text(String(format: "%.1f dBFS", peak.magnitudeDB))
                             .font(.caption.monospacedDigit())
                             .foregroundStyle(.secondary)
@@ -42,6 +43,7 @@ struct SpectrumDetailView: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
                 .accessibilityLabel("Close spectrum detail")
+                .accessibilityIdentifier("close-spectrum-detail")
             }
             .padding(.horizontal, 12)
             .padding(.top, 9)

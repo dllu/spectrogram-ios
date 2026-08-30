@@ -45,6 +45,7 @@ struct SpectrogramPane: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Live spectrogram")
             .accessibilityHint("Tap vertically to inspect the spectrum at that time")
+            .accessibilityIdentifier("spectrogram-waterfall")
         }
         .clipped()
     }
