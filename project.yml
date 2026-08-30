@@ -16,13 +16,12 @@ settings:
 
 targets:
   SpectrogramCore:
-    type: framework
+    type: library.static
     platform: iOS
     sources:
       - path: Spectrogram/Sources/SpectrogramCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.dllu.spectrogram.core
         PRODUCT_NAME: SpectrogramCore
         DEFINES_MODULE: YES
         SKIP_INSTALL: YES

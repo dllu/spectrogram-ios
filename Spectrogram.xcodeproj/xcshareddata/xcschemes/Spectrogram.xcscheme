@@ -44,7 +44,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "74DA429D8CBE86E69ED58DFC"
-               BuildableName = "SpectrogramCore.framework"
+               BuildableName = "libSpectrogramCore.a"
                BlueprintName = "SpectrogramCore"
                ReferencedContainer = "container:Spectrogram.xcodeproj">
             </BuildableReference>
