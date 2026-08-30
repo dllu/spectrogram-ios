@@ -26,7 +26,8 @@ final class SpectrogramUITests: XCTestCase {
         XCTAssertTrue(plot.waitForExistence(timeout: 3))
         XCTAssertEqual(captureButton.label, "Resume")
 
-        plot.coordinate(withNormalizedOffset: CGVector(dx: 0.63, dy: 0.5)).tap()
+        // Account for the plot's labeled y-axis inset; this lands on 1 kHz.
+        plot.coordinate(withNormalizedOffset: CGVector(dx: 0.595, dy: 0.5)).tap()
         let peakLabel = app.staticTexts["selected-peak-frequency"]
         XCTAssertTrue(peakLabel.waitForExistence(timeout: 2))
         XCTAssertTrue(peakLabel.label.contains("1.000 kHz"), peakLabel.label)

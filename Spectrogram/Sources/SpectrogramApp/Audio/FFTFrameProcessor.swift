@@ -48,7 +48,10 @@ final class FFTFrameProcessor {
 
         vDSP_hann_window(&window, vDSP_Length(fftSize), Int32(vDSP_HANN_NORM))
         let coherentGain = max(window.reduce(0, +), .leastNonzeroMagnitude)
-        windowScale = 2 / coherentGain
+        // vDSP's real forward transform has an inherent scale factor of two.
+        // Its output for a unit sinusoid is therefore the Hann window sum,
+        // so dividing by that sum produces amplitudes relative to full scale.
+        windowScale = 1 / coherentGain
     }
 
     deinit {
