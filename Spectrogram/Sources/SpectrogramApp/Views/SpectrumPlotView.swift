@@ -57,7 +57,7 @@ struct SpectrumPlotView: View {
             context.draw(
                 Text("\(Int(decibels))")
                     .font(.system(size: 9, design: .monospaced))
-                    .foregroundStyle(.white.opacity(0.62)),
+                    .foregroundColor(.white.opacity(0.62)),
                 at: CGPoint(x: plot.minX - 5, y: y),
                 anchor: .trailing
             )
@@ -72,7 +72,7 @@ struct SpectrumPlotView: View {
             context.draw(
                 Text(FrequencyScale.label(for: frequency))
                     .font(.system(size: 9, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.65)),
+                    .foregroundColor(.white.opacity(0.65)),
                 at: CGPoint(x: x, y: plot.maxY + 6),
                 anchor: .top
             )
