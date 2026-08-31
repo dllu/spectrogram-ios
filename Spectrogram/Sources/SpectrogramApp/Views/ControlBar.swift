@@ -62,9 +62,9 @@ struct ControlBar: View {
 
     private var canToggle: Bool {
         switch session.phase {
-        case .running, .paused, .interrupted, .idle:
+        case .running, .paused, .interrupted, .idle, .failed:
             return true
-        case .requestingPermission, .permissionDenied, .failed:
+        case .requestingPermission, .permissionDenied:
             return false
         }
     }

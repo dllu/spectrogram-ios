@@ -29,10 +29,6 @@ final class SpectrumAnalyzer {
     private var processor: FFTFrameProcessor?
     private var tapInstalled = false
 
-    var sampleRate: Double? {
-        processor?.sampleRate
-    }
-
     var isRunning: Bool {
         engine.isRunning
     }
@@ -65,8 +61,10 @@ final class SpectrumAnalyzer {
         }
 
         let processor = FFTFrameProcessor(sampleRate: format.sampleRate)
-        self.processor = processor
-        sampleQueue.reset()
+        processingQueue.sync {
+            sampleQueue.reset()
+            self.processor = processor
+        }
 
         input.installTap(onBus: 0, bufferSize: 1_024, format: format) { [weak self] buffer, _ in
             guard let self,
@@ -86,7 +84,10 @@ final class SpectrumAnalyzer {
         } catch {
             input.removeTap(onBus: 0)
             tapInstalled = false
-            self.processor = nil
+            processingQueue.sync {
+                sampleQueue.reset()
+                self.processor = nil
+            }
             throw error
         }
     }
@@ -101,8 +102,11 @@ final class SpectrumAnalyzer {
             engine.inputNode.removeTap(onBus: 0)
             tapInstalled = false
         }
-        processor = nil
-        sampleQueue.reset()
+        // Wait for any in-flight drain before releasing or replacing its FFT state.
+        processingQueue.sync {
+            sampleQueue.reset()
+            processor = nil
+        }
         try? AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
     }
 

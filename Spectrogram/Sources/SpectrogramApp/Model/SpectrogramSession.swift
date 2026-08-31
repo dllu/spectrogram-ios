@@ -110,7 +110,12 @@ final class SpectrogramSession: ObservableObject {
     }
 
     func resume() {
-        guard phase == .paused || phase == .interrupted || phase == .idle else { return }
+        switch phase {
+        case .paused, .interrupted, .idle, .failed:
+            break
+        case .requestingPermission, .running, .permissionDenied:
+            return
+        }
         if isUITesting {
             phase = .running
             return
@@ -162,6 +167,9 @@ final class SpectrogramSession: ObservableObject {
         if !isActive, phase == .running {
             shouldResumeWhenActive = true
             pause()
+        } else if isActive, phase == .permissionDenied {
+            // The user may have granted access in Settings while the app was inactive.
+            startIfNeeded()
         } else if isActive, shouldResumeWhenActive {
             shouldResumeWhenActive = false
             resume()
@@ -194,21 +202,26 @@ final class SpectrogramSession: ObservableObject {
         let binCount = fftSize / 2
         let timeStep = 1_024.0 / sampleRate
 
-        for row in 0..<320 {
+        var templates: [[Float]] = []
+        for pattern in 0..<8 {
             var magnitudes = [Float](repeating: -110, count: binCount)
             for bin in 0..<binCount {
                 let frequency = Double(bin) * sampleRate / Double(fftSize)
-                let texture = -106.0 + 2.0 * sin(Double(bin) * 0.071 + Double(row) * 0.11)
+                let texture = -106.0 + 2.0 * sin(Double(bin) * 0.071 + Double(pattern) * 0.35)
                 let firstPeak = -23.0 - 0.025 * pow(frequency - 440, 2)
                 let secondPeak = -34.0 - 0.012 * pow(frequency - 1_000, 2)
                 magnitudes[bin] = Float(max(texture, firstPeak, secondPeak))
             }
+            templates.append(magnitudes)
+        }
+
+        for row in 0..<192 {
             history.append(
                 SpectralFrame(
                     timestamp: Double(row) * timeStep,
                     sampleRate: sampleRate,
                     fftSize: fftSize,
-                    magnitudesDB: magnitudes
+                    magnitudesDB: templates[row % templates.count]
                 )
             )
         }

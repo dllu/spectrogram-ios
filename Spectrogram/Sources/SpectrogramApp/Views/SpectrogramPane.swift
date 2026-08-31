@@ -14,7 +14,10 @@ struct SpectrogramPane: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                MetalSpectrogramView(history: session.history)
+                MetalSpectrogramView(
+                    history: session.history,
+                    capturePaused: !session.phase.isCapturing
+                )
                 FrequencyAxisOverlay(maximumFrequency: maximumFrequency)
 
                 if let selection = session.selection {

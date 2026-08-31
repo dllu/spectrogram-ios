@@ -4,6 +4,11 @@ import SwiftUI
 
 struct MetalSpectrogramView: UIViewRepresentable {
     let history: SpectrogramHistory
+    let capturePaused: Bool
+
+    private var shouldRenderContinuously: Bool {
+        !capturePaused && !ProcessInfo.processInfo.arguments.contains("--ui-testing")
+    }
 
     final class Coordinator {
         var renderer: SpectrogramRenderer?
@@ -19,8 +24,8 @@ struct MetalSpectrogramView: UIViewRepresentable {
         view.clearColor = MTLClearColor(red: 0.002, green: 0.002, blue: 0.004, alpha: 1)
         view.framebufferOnly = true
         view.preferredFramesPerSecond = 60
-        view.enableSetNeedsDisplay = false
-        view.isPaused = false
+        view.enableSetNeedsDisplay = !shouldRenderContinuously
+        view.isPaused = !shouldRenderContinuously
         view.isOpaque = true
 
         if view.device != nil,
@@ -28,8 +33,17 @@ struct MetalSpectrogramView: UIViewRepresentable {
             context.coordinator.renderer = renderer
             view.delegate = renderer
         }
+        if !shouldRenderContinuously {
+            view.setNeedsDisplay()
+        }
         return view
     }
 
-    func updateUIView(_ view: MTKView, context: Context) {}
+    func updateUIView(_ view: MTKView, context: Context) {
+        view.enableSetNeedsDisplay = !shouldRenderContinuously
+        view.isPaused = !shouldRenderContinuously
+        if !shouldRenderContinuously {
+            view.setNeedsDisplay()
+        }
+    }
 }
