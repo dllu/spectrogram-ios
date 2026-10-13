@@ -36,6 +36,25 @@ public enum FrequencyScale {
         return candidates.filter { $0 >= minimum && $0 <= maximum }
     }
 
+    /// Keeps endpoint labels and drops interior labels that would overlap.
+    public static func ticks(maximum: Double, width: Double, minimumSpacing: Double = 44) -> [Double] {
+        let candidates = ticks(maximum: maximum)
+        guard let first = candidates.first, let last = candidates.last else { return [] }
+        guard width >= minimumSpacing, first != last else { return [first] }
+        var result = [first]
+        let lastX = normalizedPosition(for: last, maximum: maximum) * width
+        var previousX = normalizedPosition(for: first, maximum: maximum) * width
+        for frequency in candidates.dropFirst().dropLast() {
+            let x = normalizedPosition(for: frequency, maximum: maximum) * width
+            if x - previousX >= minimumSpacing, lastX - x >= minimumSpacing {
+                result.append(frequency)
+                previousX = x
+            }
+        }
+        if lastX - previousX >= minimumSpacing { result.append(last) }
+        return result
+    }
+
     public static func label(for frequency: Double, precise: Bool = false) -> String {
         if precise {
             if frequency >= 1_000 {

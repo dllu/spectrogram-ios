@@ -17,7 +17,7 @@ enum SpectrumAnalyzerError: LocalizedError {
 }
 
 final class SpectrumAnalyzer {
-    var onFrame: ((SpectralFrame) -> Void)?
+    var onFrame: ((SpectralFrame, Bool) -> Void)?
 
     private let engine = AVAudioEngine()
     private let processingQueue = DispatchQueue(
@@ -28,6 +28,8 @@ final class SpectrumAnalyzer {
     private var drainScratch = Array(repeating: Float.zero, count: 8_192)
     private var processor: FFTFrameProcessor?
     private var tapInstalled = false
+    // Owned exclusively by processingQueue.
+    private var lastPublishedTimestamp = -Double.infinity
 
     var isRunning: Bool {
         engine.isRunning
@@ -36,16 +38,23 @@ final class SpectrumAnalyzer {
     func start() throws {
         if tapInstalled {
             if !engine.isRunning {
+                try AVAudioSession.sharedInstance().setActive(true)
                 try engine.start()
             }
             return
         }
 
         let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.record, mode: .measurement, options: [.allowBluetooth])
+        try audioSession.setCategory(.record, mode: .measurement, options: [.allowBluetoothHFP])
         try audioSession.setPreferredSampleRate(48_000)
         try audioSession.setPreferredIOBufferDuration(0.01)
         try audioSession.setActive(true, options: [])
+        var started = false
+        defer {
+            if !started {
+                try? audioSession.setActive(false, options: [.notifyOthersOnDeactivation])
+            }
+        }
 
         guard audioSession.isInputAvailable else {
             throw SpectrumAnalyzerError.microphoneUnavailable
@@ -64,6 +73,7 @@ final class SpectrumAnalyzer {
         processingQueue.sync {
             sampleQueue.reset()
             self.processor = processor
+            lastPublishedTimestamp = -Double.infinity
         }
 
         input.installTap(onBus: 0, bufferSize: 1_024, format: format) { [weak self] buffer, _ in
@@ -81,6 +91,7 @@ final class SpectrumAnalyzer {
         engine.prepare()
         do {
             try engine.start()
+            started = true
         } catch {
             input.removeTap(onBus: 0)
             tapInstalled = false
@@ -94,6 +105,8 @@ final class SpectrumAnalyzer {
 
     func pause() {
         engine.pause()
+        // Finish pending frames before freezing or selecting the history.
+        processingQueue.sync {}
     }
 
     func stop() {
@@ -117,7 +130,12 @@ final class SpectrumAnalyzer {
                 drainScratch.withUnsafeBufferPointer { buffer in
                     let samples = UnsafeBufferPointer(start: buffer.baseAddress, count: count)
                     processor?.ingest(samples) { [weak self] frame in
-                        self?.onFrame?(frame)
+                        guard let self else { return }
+                        let shouldPublish = frame.timestamp - self.lastPublishedTimestamp >= 0.1
+                        if shouldPublish {
+                            self.lastPublishedTimestamp = frame.timestamp
+                        }
+                        self.onFrame?(frame, shouldPublish)
                     }
                 }
                 continue

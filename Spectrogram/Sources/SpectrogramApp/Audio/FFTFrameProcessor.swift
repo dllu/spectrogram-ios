@@ -61,7 +61,7 @@ final class FFTFrameProcessor {
     func ingest(_ samples: UnsafeBufferPointer<Float>, onFrame: (SpectralFrame) -> Void) {
         for sample in samples {
             sampleRing[writeIndex] = sample
-            writeIndex = (writeIndex + 1) % fftSize
+            writeIndex = (writeIndex + 1) & (fftSize - 1)
             totalSamples &+= 1
 
             if availableSamples < fftSize {
@@ -92,8 +92,23 @@ final class FFTFrameProcessor {
     }
 
     private func makeFrame() -> SpectralFrame {
-        for index in 0..<fftSize {
-            windowedSamples[index] = sampleRing[(writeIndex + index) % fftSize] * window[index]
+        // Unwrap the circular buffer in two vector operations, avoiding a modulo
+        // and scalar multiplication for every sample in every overlapping frame.
+        sampleRing.withUnsafeBufferPointer { samples in
+            window.withUnsafeBufferPointer { window in
+                windowedSamples.withUnsafeMutableBufferPointer { output in
+                    let firstCount = fftSize - writeIndex
+                    vDSP_vmul(samples.baseAddress!.advanced(by: writeIndex), 1,
+                              window.baseAddress!, 1, output.baseAddress!, 1,
+                              vDSP_Length(firstCount))
+                    if writeIndex > 0 {
+                        vDSP_vmul(samples.baseAddress!, 1,
+                                  window.baseAddress!.advanced(by: firstCount), 1,
+                                  output.baseAddress!.advanced(by: firstCount), 1,
+                                  vDSP_Length(writeIndex))
+                    }
+                }
+            }
         }
 
         realParts.withUnsafeMutableBufferPointer { realBuffer in

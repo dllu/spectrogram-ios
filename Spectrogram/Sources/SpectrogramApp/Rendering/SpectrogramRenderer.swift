@@ -27,13 +27,13 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
     private let pipeline: MTLRenderPipelineState
 
     private var texture: MTLTexture?
-    private var encodedRow: [UInt8] = []
     private var lastSequence: UInt64?
     private var observedGeneration: UInt64
     private var validRows = 0
     private var latestPhysicalRow = 0
     private var latestSampleRate = 48_000.0
     private var latestFFTSize = 4_096
+    private var lastDrawableSize: CGSize = .zero
 
     init(view: MTKView, history: SpectrogramHistory) throws {
         guard let device = view.device,
@@ -63,12 +63,17 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
 
     func draw(in view: MTKView) {
-        synchronizeHistory()
-
+        // A display refresh can outpace the audio hop rate. Keep the last drawable
+        // until new audio, a clear, or a resize actually changes the image.
+        guard history.latestSequence != lastSequence || history.generation != observedGeneration
+                || view.drawableSize != lastDrawableSize else { return }
         guard let renderPass = view.currentRenderPassDescriptor,
               let drawable = view.currentDrawable,
-              let commandBuffer = commandQueue.makeCommandBuffer(),
-              let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPass) else {
+              let commandBuffer = commandQueue.makeCommandBuffer() else { return }
+        synchronizeHistory(using: commandBuffer)
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPass) else {
+            lastSequence = nil
+            validRows = 0
             return
         }
 
@@ -98,9 +103,10 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
         encoder.endEncoding()
         commandBuffer.present(drawable)
         commandBuffer.commit()
+        lastDrawableSize = view.drawableSize
     }
 
-    private func synchronizeHistory() {
+    private func synchronizeHistory(using commandBuffer: MTLCommandBuffer) {
         let generation = history.generation
         if generation != observedGeneration {
             observedGeneration = generation
@@ -109,33 +115,42 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
         }
 
         let frames = history.frames(after: lastSequence)
-        for frame in frames {
+        let maximumWidth = frames.reduce(0) { max($0, $1.magnitudesDB.count) }
+        guard maximumWidth > 0 else { return }
+        let bytesPerRow = (maximumWidth + 255) / 256 * 256
+        guard let upload = device.makeBuffer(length: bytesPerRow * frames.count, options: .storageModeShared),
+              let blit = commandBuffer.makeBlitCommandEncoder() else { return }
+        blit.label = "Upload spectral rows"
+        defer { blit.endEncoding() }
+        for (rowIndex, frame) in frames.enumerated() {
             if texture?.width != frame.magnitudesDB.count {
                 makeTexture(width: frame.magnitudesDB.count)
                 validRows = 0
             }
             guard let texture else { continue }
 
-            if encodedRow.count != frame.magnitudesDB.count {
-                encodedRow = Array(repeating: 0, count: frame.magnitudesDB.count)
-            }
+            // Command-buffer copies order writes after previous GPU reads of this
+            // texture. CPU-side texture.replace can race an in-flight render.
+            let offset = rowIndex * bytesPerRow
+            let bytes = upload.contents().advanced(by: offset).assumingMemoryBound(to: UInt8.self)
             let range = Self.ceilingDB - Self.floorDB
             for index in frame.magnitudesDB.indices {
                 let normalized = (frame.magnitudesDB[index] - Self.floorDB) / range
-                encodedRow[index] = UInt8((min(max(normalized, 0), 1) * 255).rounded())
+                bytes[index] = UInt8((min(max(normalized, 0), 1) * 255).rounded())
             }
 
             let physicalRow = Int(frame.sequence % UInt64(history.capacity))
-            let region = MTLRegionMake2D(0, physicalRow, texture.width, 1)
-            encodedRow.withUnsafeBytes { bytes in
-                guard let baseAddress = bytes.baseAddress else { return }
-                texture.replace(
-                    region: region,
-                    mipmapLevel: 0,
-                    withBytes: baseAddress,
-                    bytesPerRow: texture.width
-                )
-            }
+            blit.copy(
+                from: upload,
+                sourceOffset: offset,
+                sourceBytesPerRow: bytesPerRow,
+                sourceBytesPerImage: bytesPerRow,
+                sourceSize: MTLSize(width: texture.width, height: 1, depth: 1),
+                to: texture,
+                destinationSlice: 0,
+                destinationLevel: 0,
+                destinationOrigin: MTLOrigin(x: 0, y: physicalRow, z: 0)
+            )
 
             latestPhysicalRow = physicalRow
             latestSampleRate = frame.sampleRate
@@ -156,10 +171,9 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
             height: history.capacity,
             mipmapped: false
         )
-        descriptor.storageMode = .shared
+        descriptor.storageMode = .private
         descriptor.usage = .shaderRead
         texture = device.makeTexture(descriptor: descriptor)
         texture?.label = "Spectrogram history"
-        encodedRow = Array(repeating: 0, count: width)
     }
 }

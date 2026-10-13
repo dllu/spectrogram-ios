@@ -17,9 +17,9 @@ final class SpectrogramSession: ObservableObject {
     private let analyzer = SpectrumAnalyzer()
     private let isUITesting: Bool
     private var notificationTokens: [NSObjectProtocol] = []
-    private var lastPublishedTimestamp = -Double.infinity
     private var wasRunningBeforeInterruption = false
     private var shouldResumeWhenActive = false
+    private var isSceneActive = true
     private var isRestartingForRouteChange = false
 
     init() {
@@ -28,22 +28,20 @@ final class SpectrogramSession: ObservableObject {
 #else
         isUITesting = false
 #endif
-        analyzer.onFrame = { [weak self] frame in
-            guard let self else { return }
-            let storedFrame = self.history.append(frame)
-
-            // Audio frames arrive around 47 times per second. Updating labels at 10 Hz
-            // keeps SwiftUI work small while Metal consumes every frame independently.
-            guard storedFrame.timestamp - self.lastPublishedTimestamp >= 0.1 else { return }
-            self.lastPublishedTimestamp = storedFrame.timestamp
+        let history = self.history
+        analyzer.onFrame = { [weak self, history] frame, shouldPublish in
+            let generation = history.generation
+            let storedFrame = history.append(frame)
+            guard shouldPublish else { return }
             let peak = PeakDetector.strongestPeak(
                 in: storedFrame,
                 maximumFrequency: FrequencyScale.displayMaximum(nyquist: storedFrame.nyquistFrequency)
             )
             DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
+                guard let self, self.phase.isCapturing,
+                      history.generation == generation else { return }
                 self.latestPeak = peak
-                self.framesCaptured = self.history.count
+                self.framesCaptured = history.count
             }
         }
 
@@ -90,10 +88,6 @@ final class SpectrogramSession: ObservableObject {
     }
 
     func toggleCapture() {
-        if isUITesting {
-            phase = phase.isCapturing ? .paused : .running
-            return
-        }
         if phase.isCapturing {
             pause()
         } else {
@@ -107,6 +101,13 @@ final class SpectrogramSession: ObservableObject {
             analyzer.pause()
         }
         phase = .paused
+        framesCaptured = history.count
+        if let frame = history.latest() {
+            latestPeak = PeakDetector.strongestPeak(
+                in: frame,
+                maximumFrequency: FrequencyScale.displayMaximum(nyquist: frame.nyquistFrequency)
+            )
+        }
     }
 
     func resume() {
@@ -116,6 +117,7 @@ final class SpectrogramSession: ObservableObject {
         case .requestingPermission, .running, .permissionDenied:
             return
         }
+        selection = nil
         if isUITesting {
             phase = .running
             return
@@ -124,6 +126,9 @@ final class SpectrogramSession: ObservableObject {
     }
 
     func selectSlice(normalizedYFromTop y: Double) {
+        if phase == .running {
+            pause()
+        }
         let clampedY = min(max(y, 0), 1)
         guard let frame = history.frame(normalizedYFromTop: clampedY) else { return }
 
@@ -133,22 +138,19 @@ final class SpectrogramSession: ObservableObject {
             peak: PeakDetector.strongestPeak(in: frame, maximumFrequency: maximum),
             tappedNormalizedY: clampedY
         )
-
-        // Freezing the waterfall keeps the selected horizontal slice visually stable.
-        if phase == .running {
-            pause()
-        }
     }
 
     func selectPeak(normalizedX: Double) {
         guard var selection else { return }
         let maximum = FrequencyScale.displayMaximum(nyquist: selection.frame.nyquistFrequency)
         let frequency = FrequencyScale.frequency(at: normalizedX, maximum: maximum)
-        selection.peak = PeakDetector.nearestPeak(
+        let peak = PeakDetector.nearestPeak(
             to: frequency,
             in: selection.frame,
             maximumFrequency: maximum
         )
+        guard peak != selection.peak else { return }
+        selection.peak = peak
         self.selection = selection
     }
 
@@ -164,6 +166,7 @@ final class SpectrogramSession: ObservableObject {
     }
 
     func handleSceneActive(_ isActive: Bool) {
+        isSceneActive = isActive
         if !isActive, phase == .running {
             shouldResumeWhenActive = true
             pause()
@@ -186,6 +189,11 @@ final class SpectrogramSession: ObservableObject {
     }
 
     private func startCapture() {
+        guard isSceneActive else {
+            shouldResumeWhenActive = true
+            phase = .paused
+            return
+        }
         do {
             try analyzer.start()
             phase = .running

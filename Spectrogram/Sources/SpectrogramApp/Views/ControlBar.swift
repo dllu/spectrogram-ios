@@ -21,6 +21,8 @@ struct ControlBar: View {
                     Text("Peak \(FrequencyScale.label(for: peak.frequency, precise: true))")
                         .font(.system(.subheadline, design: .rounded, weight: .semibold))
                         .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                         .foregroundStyle(.primary)
                 } else {
                     Text("Spectrogram")
@@ -34,7 +36,7 @@ struct ControlBar: View {
                 session.clearHistory()
             } label: {
                 Image(systemName: "trash")
-                    .frame(width: 34, height: 34)
+                    .frame(width: 44, height: 44)
             }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
@@ -47,7 +49,7 @@ struct ControlBar: View {
             } label: {
                 Image(systemName: session.phase.isCapturing ? "pause.fill" : "play.fill")
                     .font(.body.weight(.semibold))
-                    .frame(width: 42, height: 42)
+                    .frame(width: 44, height: 44)
                     .background(.primary.opacity(0.12), in: Circle())
             }
             .buttonStyle(.plain)

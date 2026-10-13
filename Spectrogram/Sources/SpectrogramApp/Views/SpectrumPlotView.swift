@@ -6,7 +6,7 @@ struct SpectrumPlotView: View {
     let onTap: (Double) -> Void
 
     private let floorDB = -110.0
-    private let ceilingDB = -20.0
+    private let ceilingDB = 0.0
     private let insets = EdgeInsets(top: 18, leading: 42, bottom: 26, trailing: 12)
 
     var body: some View {
@@ -18,12 +18,13 @@ struct SpectrumPlotView: View {
                     width: max(1, size.width - insets.leading - insets.trailing),
                     height: max(1, size.height - insets.top - insets.bottom)
                 )
+                context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Color(uiColor: .secondarySystemBackground)))
                 drawGrid(in: &context, plot: plot)
                 drawSpectrum(in: &context, plot: plot)
                 drawSelectedPeak(in: &context, plot: plot)
             }
             .gesture(
-                SpatialTapGesture().onEnded { value in
+                DragGesture(minimumDistance: 0).onChanged { value in
                     let width = geometry.size.width - insets.leading - insets.trailing
                     guard width > 0 else { return }
                     onTap((value.location.x - insets.leading) / width)
@@ -33,7 +34,19 @@ struct SpectrumPlotView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Intensity by frequency")
         .accessibilityValue(accessibilityValue)
-        .accessibilityHint("Tap near a frequency to select its nearest peak")
+        .accessibilityHint("Drag across frequencies to select the nearest peak")
+        .accessibilityAdjustableAction { direction in
+            let peaks = PeakDetector.localPeaks(in: selection.frame, maximumFrequency: maximumFrequency)
+            guard !peaks.isEmpty else { return }
+            let currentIndex = peaks.firstIndex { $0.index == selection.peak?.index } ?? 0
+            let nextIndex: Int
+            switch direction {
+            case .increment: nextIndex = min(currentIndex + 1, peaks.count - 1)
+            case .decrement: nextIndex = max(currentIndex - 1, 0)
+            @unknown default: return
+            }
+            onTap(FrequencyScale.normalizedPosition(for: peaks[nextIndex].frequency, maximum: maximumFrequency))
+        }
         .accessibilityIdentifier("spectrum-plot")
     }
 
@@ -49,7 +62,7 @@ struct SpectrumPlotView: View {
     private func drawGrid(in context: inout GraphicsContext, plot: CGRect) {
         context.fill(Path(plot), with: .color(Color(red: 0.015, green: 0.012, blue: 0.025)))
 
-        for decibels in stride(from: -100.0, through: -20.0, by: 20) {
+        for decibels in stride(from: -100.0, through: 0.0, by: 20) {
             let y = yPosition(decibels: decibels, plot: plot)
             var line = Path()
             line.move(to: CGPoint(x: plot.minX, y: y))
@@ -64,7 +77,7 @@ struct SpectrumPlotView: View {
             )
         }
 
-        for frequency in FrequencyScale.ticks(maximum: maximumFrequency) {
+        for frequency in FrequencyScale.ticks(maximum: maximumFrequency, width: max(0, plot.width - 24)) {
             let x = xPosition(frequency: frequency, plot: plot)
             var line = Path()
             line.move(to: CGPoint(x: x, y: plot.minY))

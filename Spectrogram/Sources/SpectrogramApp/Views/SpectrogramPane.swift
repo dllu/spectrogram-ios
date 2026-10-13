@@ -48,6 +48,9 @@ struct SpectrogramPane: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Live spectrogram")
             .accessibilityHint("Tap vertically to inspect the spectrum at that time")
+            .accessibilityAction(named: "Inspect newest slice") {
+                session.selectSlice(normalizedYFromTop: 1)
+            }
             .accessibilityIdentifier("spectrogram-waterfall")
         }
         .clipped()

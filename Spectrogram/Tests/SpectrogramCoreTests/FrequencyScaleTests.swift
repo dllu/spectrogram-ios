@@ -20,4 +20,19 @@ final class FrequencyScaleTests: XCTestCase {
         XCTAssertEqual(FrequencyScale.normalizedPosition(for: 1, maximum: 20_000), 0)
         XCTAssertEqual(FrequencyScale.normalizedPosition(for: 30_000, maximum: 20_000), 1)
     }
+    func testCompactTicksKeepEndpointsWithoutOverlapping() {
+        for width in [100.0, 240, 320, 768] {
+            let ticks = FrequencyScale.ticks(maximum: 20_000, width: width)
+            XCTAssertEqual(ticks.first, 20)
+            XCTAssertEqual(ticks.last, 20_000)
+            for (left, right) in zip(ticks, ticks.dropFirst()) {
+                let distance = (FrequencyScale.normalizedPosition(for: right, maximum: 20_000)
+                    - FrequencyScale.normalizedPosition(for: left, maximum: 20_000)) * width
+                XCTAssertGreaterThanOrEqual(distance, 44 - 0.000_001)
+            }
+        }
+        XCTAssertEqual(FrequencyScale.ticks(maximum: 20_000, width: 20), [20])
+        XCTAssertEqual(FrequencyScale.ticks(maximum: 20, width: 320), [20])
+    }
+
 }

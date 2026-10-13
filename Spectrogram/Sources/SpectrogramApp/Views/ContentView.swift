@@ -4,6 +4,7 @@ import UIKit
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.openURL) private var openURL
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @StateObject private var session = SpectrogramSession()
 
     var body: some View {
@@ -16,7 +17,7 @@ struct ContentView: View {
 
                 if let selection = session.selection {
                     SpectrumDetailView(session: session, selection: selection)
-                        .frame(height: min(max(240, geometry.size.height * 0.38), 340))
+                        .frame(height: min(340, max(160, geometry.size.height * (geometry.size.width > geometry.size.height ? 0.55 : 0.38))))
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
 
@@ -35,7 +36,7 @@ struct ContentView: View {
         }
         .background(.black)
         .preferredColorScheme(.dark)
-        .animation(.easeInOut(duration: 0.2), value: session.selection?.id)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: session.selection?.id)
         .onAppear {
             session.startIfNeeded()
         }

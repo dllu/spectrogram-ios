@@ -6,7 +6,7 @@ struct FrequencyAxisOverlay: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let ticks = FrequencyScale.ticks(maximum: maximumFrequency)
+            let ticks = FrequencyScale.ticks(maximum: maximumFrequency, width: max(0, geometry.size.width - 42))
             ZStack(alignment: .topLeading) {
                 ForEach(ticks, id: \.self) { frequency in
                     let normalized = FrequencyScale.normalizedPosition(
@@ -38,7 +38,8 @@ struct FrequencyAxisOverlay: View {
                 }
                 .font(.system(size: 9, weight: .medium, design: .rounded))
                 .foregroundStyle(.white.opacity(0.6))
-                .padding(.vertical, 7)
+                .padding(.top, 7)
+                .padding(.bottom, 26)
                 .padding(.leading, 6)
             }
         }

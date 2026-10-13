@@ -21,4 +21,25 @@ final class FFTFrameProcessorTests: XCTestCase {
         XCTAssertEqual(peak.frequency, 1_000, accuracy: 1)
         XCTAssertEqual(peak.magnitudeDB, 0, accuracy: 0.5)
     }
+    func testChunkBoundariesDoNotChangeOverlappingFrames() {
+        let samples = (0..<12_345).map { Float(sin(Double($0) * 0.17)) }
+        let contiguous = FFTFrameProcessor(sampleRate: 48_000)
+        let chunked = FFTFrameProcessor(sampleRate: 48_000)
+        var expected: [SpectralFrame] = []
+        var actual: [SpectralFrame] = []
+        samples.withUnsafeBufferPointer { buffer in
+            contiguous.ingest(buffer) { expected.append($0) }
+            var start = 0
+            while start < buffer.count {
+                let count = min(317, buffer.count - start)
+                chunked.ingest(UnsafeBufferPointer(start: buffer.baseAddress!.advanced(by: start), count: count)) {
+                    actual.append($0)
+                }
+                start += count
+            }
+        }
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(actual.count, 9)
+    }
+
 }

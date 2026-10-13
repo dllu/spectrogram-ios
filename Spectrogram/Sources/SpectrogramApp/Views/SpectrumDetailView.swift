@@ -26,9 +26,13 @@ struct SpectrumDetailView: View {
                             .font(.system(.headline, design: .rounded, weight: .semibold))
                             .foregroundStyle(.cyan)
                             .monospacedDigit()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
                             .accessibilityIdentifier("selected-peak-frequency")
                         Text(String(format: "%.1f dBFS", peak.magnitudeDB))
                             .font(.caption.monospacedDigit())
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -38,6 +42,7 @@ struct SpectrumDetailView: View {
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title3)
+                        .frame(width: 44, height: 44)
                         .symbolRenderingMode(.hierarchical)
                 }
                 .buttonStyle(.plain)
@@ -51,9 +56,9 @@ struct SpectrumDetailView: View {
             SpectrumPlotView(selection: selection) { normalizedX in
                 session.selectPeak(normalizedX: normalizedX)
             }
-            .frame(minHeight: 170)
+            .frame(minHeight: 60)
 
-            Text("Tap the trace to snap to the nearest peak")
+            Text("Tap or drag the trace to inspect a peak")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .padding(.bottom, 7)

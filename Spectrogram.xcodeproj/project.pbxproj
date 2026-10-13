@@ -82,7 +82,7 @@
 		4D668E0381CA0A1B8B97C4E8 /* FrequencyAxisOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyAxisOverlay.swift; sourceTree = "<group>"; };
 		5119D46DD31C1B0700BD7CC6 /* FrequencyScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyScaleTests.swift; sourceTree = "<group>"; };
 		5418871FB813312093C13B56 /* AudioSampleRingBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSampleRingBufferTests.swift; sourceTree = "<group>"; };
-		579BB292B83B97F6B3252F95 /* Spectrogram.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Spectrogram.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		579BB292B83B97F6B3252F95 /* Spectrogram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spectrogram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A2F33D737EF56B4A20CAA66 /* SpectrumPlotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumPlotView.swift; sourceTree = "<group>"; };
 		6BB12C477C04AB82C949A89C /* SpectralFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectralFrame.swift; sourceTree = "<group>"; };
 		6FC639F6533A1DE03725B7CC /* SpectrogramHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramHistoryTests.swift; sourceTree = "<group>"; };
@@ -676,6 +676,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SC87W94H4L;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Spectrogram/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -770,6 +771,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SC87W94H4L;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Spectrogram/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
