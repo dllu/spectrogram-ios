@@ -19,7 +19,7 @@ struct SpectrogramUniforms {
     float displayFloor;
     float displayCeiling;
     float contrast;
-    float bottomFadeFraction;
+    uint visibleRows;
 };
 
 vertex VertexOutput spectrogramVertex(uint vertexID [[vertex_id]]) {
@@ -75,7 +75,7 @@ fragment float4 spectrogramFragment(
     // Use a fixed time span from the first frame onward. Newest uploaded rows
     // sit above the visible timeline until the display-rate tween reaches them.
     const float age = saturate(input.textureCoordinate.y)
-        * float(uniforms.textureHeight - 1) + uniforms.rowOffset;
+        * float(uniforms.visibleRows - 1) + uniforms.rowOffset;
     if (age > float(uniforms.validRows - 1)) {
         return float4(0.002, 0.002, 0.004, 1.0);
     }
@@ -101,10 +101,5 @@ fragment float4 spectrogramFragment(
     const float normalized = saturate((decibels - uniforms.displayFloor)
         / (uniforms.displayCeiling - uniforms.displayFloor));
     const float intensity = pow(normalized, uniforms.contrast);
-    // Old rows are discarded discretely by the ring buffer. A fixed 16-point
-    // fade at the oldest edge hides that boundary while keeping the newest
-    // rows at the top at full contrast.
-    const float fade = smoothstep(0.0, uniforms.bottomFadeFraction,
-        1.0 - saturate(input.textureCoordinate.y));
-    return float4(mix(float3(0.002, 0.002, 0.004), inferno(intensity), fade), 1.0);
+    return float4(inferno(intensity), 1.0);
 }

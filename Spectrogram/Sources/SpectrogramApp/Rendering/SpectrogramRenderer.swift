@@ -15,7 +15,7 @@ private struct SpectrogramUniforms {
     var displayFloor: Float = -90
     var displayCeiling: Float = 0
     var contrast: Float = 1.35
-    var bottomFadeFraction: Float = 0.02
+    var visibleRows: UInt32 = 1_024
 }
 
 enum SpectrogramRendererError: Error {
@@ -108,7 +108,7 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
                 displayFloor: displayFloor,
                 displayCeiling: 0,
                 contrast: contrast,
-                bottomFadeFraction: Float(min(16 / max(view.bounds.height, 1), 0.1))
+                visibleRows: UInt32(history.visibleRowCount)
             )
             encoder.setRenderPipelineState(pipeline)
             encoder.setFragmentTexture(texture, index: 0)

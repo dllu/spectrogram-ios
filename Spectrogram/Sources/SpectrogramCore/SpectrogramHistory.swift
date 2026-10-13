@@ -3,6 +3,9 @@ import Foundation
 /// Thread-safe, fixed-size storage shared by the audio and rendering queues.
 public final class SpectrogramHistory: @unchecked Sendable {
     public let capacity: Int
+    /// The viewport is narrower in time than retained storage, leaving room
+    /// for presentation latency and interpolation beyond the oldest edge.
+    public let visibleRowCount: Int
 
     private let lock = NSLock()
     private var storage: [SpectralFrame?]
@@ -10,9 +13,11 @@ public final class SpectrogramHistory: @unchecked Sendable {
     private var storedCount = 0
     private var currentGeneration: UInt64 = 0
 
-    public init(capacity: Int) {
-        precondition(capacity > 0)
+    public init(capacity: Int, visibleRowCount: Int? = nil) {
+        let visible = visibleRowCount ?? capacity
+        precondition(capacity > 0 && visible > 0 && visible <= capacity)
         self.capacity = capacity
+        self.visibleRowCount = visible
         storage = Array(repeating: nil, count: capacity)
     }
 

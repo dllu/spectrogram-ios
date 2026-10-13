@@ -7,7 +7,13 @@ import SpectrogramCore
 final class SpectrogramSession: ObservableObject {
     static let historyCapacity = 1_024
 
-    let history = SpectrogramHistory(capacity: historyCapacity)
+    // Reserve more than the audio handoff's maximum burst (128 FFT hops),
+    // plus the fractional playhead's interpolation rows, below the viewport.
+    static let offscreenRowCapacity = 256
+    let history = SpectrogramHistory(
+        capacity: historyCapacity + offscreenRowCapacity,
+        visibleRowCount: historyCapacity
+    )
 
     let scrollClock = SpectrogramScrollClock()
     @Published private(set) var phase: CapturePhase = .idle {
@@ -165,7 +171,7 @@ final class SpectrogramSession: ObservableObject {
     func selectSlice(normalizedYFromTop y: Double) {
         let clampedY = min(max(y, 0), 1)
         guard let position = scrollClock.position() else { return }
-        let sequence = (position - clampedY * Double(history.capacity - 1)).rounded()
+        let sequence = (position - clampedY * Double(history.visibleRowCount - 1)).rounded()
         guard sequence >= 1, let frame = history.frame(sequence: UInt64(sequence)) else { return }
 
         if phase == .running { pause() }
@@ -261,7 +267,7 @@ final class SpectrogramSession: ObservableObject {
             templates.append(magnitudes)
         }
 
-        for row in 0..<Self.historyCapacity {
+        for row in 0..<history.capacity {
             history.append(
                 SpectralFrame(
                     timestamp: Double(row) * timeStep,
