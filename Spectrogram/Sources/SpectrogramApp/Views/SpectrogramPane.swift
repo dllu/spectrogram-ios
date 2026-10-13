@@ -4,11 +4,8 @@ import SwiftUI
 struct SpectrogramPane: View {
     @ObservedObject var session: SpectrogramSession
 
-    private var maximumFrequency: Double {
-        guard let frame = session.history.latest() else {
-            return FrequencyScale.defaultMaximum
-        }
-        return FrequencyScale.displayMaximum(nyquist: frame.nyquistFrequency)
+    private var range: FrequencyRange {
+        session.frequencyRange.limited(to: session.history.latest()?.nyquistFrequency ?? 24_000)
     }
 
     var body: some View {
@@ -16,15 +13,17 @@ struct SpectrogramPane: View {
             ZStack {
                 MetalSpectrogramView(
                     history: session.history,
-                    capturePaused: !session.phase.isCapturing
+                    capturePaused: !session.phase.isCapturing,
+                    scrollClock: session.scrollClock,
+                    frequencyRange: range,
+                    displayFloor: session.displayFloor,
+                    contrast: session.contrast
                 )
-                FrequencyAxisOverlay(maximumFrequency: maximumFrequency)
 
                 if let selection = session.selection {
                     Rectangle()
                         .fill(Color.cyan.opacity(0.95))
                         .frame(height: 1)
-                        .shadow(color: .cyan, radius: 2)
                         .position(
                             x: geometry.size.width / 2,
                             y: selection.tappedNormalizedY * geometry.size.height
@@ -47,9 +46,9 @@ struct SpectrogramPane: View {
             )
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Live spectrogram")
-            .accessibilityHint("Tap vertically to inspect the spectrum at that time")
+            .accessibilityHint("Newest audio is at the top. Tap vertically to inspect the spectrum at that time")
             .accessibilityAction(named: "Inspect newest slice") {
-                session.selectSlice(normalizedYFromTop: 1)
+                session.selectSlice(normalizedYFromTop: 0)
             }
             .accessibilityIdentifier("spectrogram-waterfall")
         }

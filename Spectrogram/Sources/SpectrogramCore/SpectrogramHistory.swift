@@ -61,14 +61,22 @@ public final class SpectrogramHistory: @unchecked Sendable {
         return storage[Int(sequence % UInt64(capacity))]
     }
 
-    /// Maps the top of the rendered history to the oldest frame and the bottom to the newest.
+    /// Maps the top of the retained history to the newest frame and the bottom to the oldest.
     public func frame(normalizedYFromTop y: Double) -> SpectralFrame? {
         lock.lock()
         defer { lock.unlock() }
         guard storedCount > 0 else { return nil }
         let clampedY = min(max(y, 0), 1)
-        let age = Int(((1 - clampedY) * Double(storedCount - 1)).rounded())
+        let age = Int((clampedY * Double(storedCount - 1)).rounded())
         let sequence = nextSequence - 1 - UInt64(age)
+        return storage[Int(sequence % UInt64(capacity))]
+    }
+
+    public func frame(sequence: UInt64) -> SpectralFrame? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard storedCount > 0, sequence >= nextSequence - UInt64(storedCount),
+              sequence < nextSequence else { return nil }
         return storage[Int(sequence % UInt64(capacity))]
     }
 

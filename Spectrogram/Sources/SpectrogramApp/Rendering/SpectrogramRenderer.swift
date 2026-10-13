@@ -1,4 +1,5 @@
 import MetalKit
+import QuartzCore
 import SpectrogramCore
 
 private struct SpectrogramUniforms {
@@ -9,7 +10,12 @@ private struct SpectrogramUniforms {
     var sampleRate: Float = 48_000
     var fftSize: Float = 4_096
     var minimumFrequency: Float = 20
-    var maximumFrequency: Float = 20_000
+    var maximumFrequency: Float = 16_000
+    var rowOffset: Float = 0
+    var displayFloor: Float = -90
+    var displayCeiling: Float = 0
+    var contrast: Float = 1.35
+    var bottomFadeFraction: Float = 0.02
 }
 
 enum SpectrogramRendererError: Error {
@@ -18,10 +24,17 @@ enum SpectrogramRendererError: Error {
 }
 
 final class SpectrogramRenderer: NSObject, MTKViewDelegate {
-    private static let floorDB: Float = -110
-    private static let ceilingDB: Float = -20
+    private static let floorDB: Float = -120
+    private static let ceilingDB: Float = 0
 
     private let history: SpectrogramHistory
+    private let scrollClock: SpectrogramScrollClock
+    var frequencyRange = FrequencyRange.standard { didSet { needsRedraw = true } }
+    var displayFloor: Float = -90 { didSet { needsRedraw = true } }
+    var contrast: Float = 1.35 { didSet { needsRedraw = true } }
+    private var needsRedraw = true
+    private var frameInterval = 1_024.0 / 48_000
+    private var previousTimestamp: Double?
     private let device: MTLDevice
     private let commandQueue: MTLCommandQueue
     private let pipeline: MTLRenderPipelineState
@@ -35,7 +48,7 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
     private var latestFFTSize = 4_096
     private var lastDrawableSize: CGSize = .zero
 
-    init(view: MTKView, history: SpectrogramHistory) throws {
+    init(view: MTKView, history: SpectrogramHistory, scrollClock: SpectrogramScrollClock) throws {
         guard let device = view.device,
               let commandQueue = device.makeCommandQueue() else {
             throw SpectrogramRendererError.commandQueueUnavailable
@@ -53,6 +66,7 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
         descriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
 
         self.history = history
+        self.scrollClock = scrollClock
         self.device = device
         self.commandQueue = commandQueue
         pipeline = try device.makeRenderPipelineState(descriptor: descriptor)
@@ -63,10 +77,10 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
 
     func draw(in view: MTKView) {
-        // A display refresh can outpace the audio hop rate. Keep the last drawable
-        // until new audio, a clear, or a resize actually changes the image.
-        guard history.latestSequence != lastSequence || history.generation != observedGeneration
-                || view.drawableSize != lastDrawableSize else { return }
+        // During capture, redraw the tween even between audio hops. Paused views
+        // remain event-driven and do no continuous GPU work.
+        guard !view.isPaused || needsRedraw || history.latestSequence != lastSequence
+                || history.generation != observedGeneration || view.drawableSize != lastDrawableSize else { return }
         guard let renderPass = view.currentRenderPassDescriptor,
               let drawable = view.currentDrawable,
               let commandBuffer = commandQueue.makeCommandBuffer() else { return }
@@ -79,6 +93,8 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
 
         encoder.label = "Draw spectrogram"
         if let texture {
+            let range = frequencyRange.limited(to: latestSampleRate / 2)
+            let visiblePosition = scrollClock.position() ?? Double(lastSequence ?? 0)
             var uniforms = SpectrogramUniforms(
                 latestRow: UInt32(latestPhysicalRow),
                 validRows: UInt32(validRows),
@@ -86,10 +102,13 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
                 textureWidth: UInt32(texture.width),
                 sampleRate: Float(latestSampleRate),
                 fftSize: Float(latestFFTSize),
-                minimumFrequency: Float(FrequencyScale.defaultMinimum),
-                maximumFrequency: Float(
-                    FrequencyScale.displayMaximum(nyquist: latestSampleRate / 2)
-                )
+                minimumFrequency: Float(range.minimum),
+                maximumFrequency: Float(range.maximum),
+                rowOffset: Float(max(0, Double(lastSequence ?? 0) - visiblePosition)),
+                displayFloor: displayFloor,
+                displayCeiling: 0,
+                contrast: contrast,
+                bottomFadeFraction: Float(min(16 / max(view.bounds.height, 1), 0.1))
             )
             encoder.setRenderPipelineState(pipeline)
             encoder.setFragmentTexture(texture, index: 0)
@@ -104,6 +123,7 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
         commandBuffer.present(drawable)
         commandBuffer.commit()
         lastDrawableSize = view.drawableSize
+        needsRedraw = false
     }
 
     private func synchronizeHistory(using commandBuffer: MTLCommandBuffer) {
@@ -112,6 +132,7 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
             observedGeneration = generation
             lastSequence = nil
             validRows = 0
+            previousTimestamp = nil
         }
 
         let frames = history.frames(after: lastSequence)
@@ -152,11 +173,18 @@ final class SpectrogramRenderer: NSObject, MTKViewDelegate {
                 destinationOrigin: MTLOrigin(x: 0, y: physicalRow, z: 0)
             )
 
+            if let previousTimestamp, frame.timestamp > previousTimestamp {
+                frameInterval = min(max(frame.timestamp - previousTimestamp, 0.001), 0.25)
+            }
+            previousTimestamp = frame.timestamp
             latestPhysicalRow = physicalRow
             latestSampleRate = frame.sampleRate
             latestFFTSize = frame.fftSize
             validRows = min(validRows + 1, history.capacity)
             lastSequence = frame.sequence
+        }
+        if let lastSequence {
+            scrollClock.update(sequence: lastSequence, interval: frameInterval, at: ProcessInfo.processInfo.systemUptime)
         }
     }
 

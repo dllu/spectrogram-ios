@@ -53,7 +53,18 @@ struct SpectrumDetailView: View {
             .padding(.horizontal, 12)
             .padding(.top, 9)
 
-            SpectrumPlotView(selection: selection) { normalizedX in
+            if let peak = selection.peak, let note = MusicalNote(frequency: peak.frequency) {
+                ViewThatFits(in: .horizontal) {
+                    Text("\(note.name) · \(note.deviationLabel) · ideal \(FrequencyScale.label(for: note.idealFrequency, precise: true))")
+                    Text("\(note.name) · \(note.deviationLabel)")
+                }
+                .font(.caption.monospacedDigit())
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier("selected-musical-note")
+                .padding(.horizontal, 12)
+            }
+
+            SpectrumPlotView(selection: selection, frequencyRange: session.frequencyRange) { normalizedX in
                 session.selectPeak(normalizedX: normalizedX)
             }
             .frame(minHeight: 60)

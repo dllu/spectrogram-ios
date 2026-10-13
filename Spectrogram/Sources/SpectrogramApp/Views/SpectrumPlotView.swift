@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SpectrumPlotView: View {
     let selection: SpectrumSelection
+    let frequencyRange: FrequencyRange
     let onTap: (Double) -> Void
 
     private let floorDB = -110.0
@@ -36,7 +37,7 @@ struct SpectrumPlotView: View {
         .accessibilityValue(accessibilityValue)
         .accessibilityHint("Drag across frequencies to select the nearest peak")
         .accessibilityAdjustableAction { direction in
-            let peaks = PeakDetector.localPeaks(in: selection.frame, maximumFrequency: maximumFrequency)
+            let peaks = PeakDetector.localPeaks(in: selection.frame, minimumFrequency: minimumFrequency, maximumFrequency: maximumFrequency)
             guard !peaks.isEmpty else { return }
             let currentIndex = peaks.firstIndex { $0.index == selection.peak?.index } ?? 0
             let nextIndex: Int
@@ -45,18 +46,24 @@ struct SpectrumPlotView: View {
             case .decrement: nextIndex = max(currentIndex - 1, 0)
             @unknown default: return
             }
-            onTap(FrequencyScale.normalizedPosition(for: peaks[nextIndex].frequency, maximum: maximumFrequency))
+            onTap(FrequencyScale.normalizedPosition(for: peaks[nextIndex].frequency, minimum: minimumFrequency, maximum: maximumFrequency))
         }
         .accessibilityIdentifier("spectrum-plot")
     }
 
+    private var minimumFrequency: Double {
+        frequencyRange.limited(to: selection.frame.nyquistFrequency).minimum
+    }
+
     private var maximumFrequency: Double {
-        FrequencyScale.displayMaximum(nyquist: selection.frame.nyquistFrequency)
+        frequencyRange.limited(to: selection.frame.nyquistFrequency).maximum
     }
 
     private var accessibilityValue: String {
         guard let peak = selection.peak else { return "No peak selected" }
-        return "Peak at \(FrequencyScale.label(for: peak.frequency, precise: true)), \(String(format: "%.1f", peak.magnitudeDB)) decibels full scale"
+        let note = MusicalNote(frequency: peak.frequency)
+        let noteLabel = note.map { ", nearest note \($0.name), \($0.deviationLabel)" } ?? ""
+        return "Peak at \(FrequencyScale.label(for: peak.frequency, precise: true)), \(String(format: "%.1f", peak.magnitudeDB)) decibels full scale\(noteLabel)"
     }
 
     private func drawGrid(in context: inout GraphicsContext, plot: CGRect) {
@@ -77,7 +84,7 @@ struct SpectrumPlotView: View {
             )
         }
 
-        for frequency in FrequencyScale.ticks(maximum: maximumFrequency, width: max(0, plot.width - 24)) {
+        for frequency in FrequencyScale.ticks(minimum: minimumFrequency, maximum: maximumFrequency, width: max(0, plot.width - 24)) {
             let x = xPosition(frequency: frequency, plot: plot)
             var line = Path()
             line.move(to: CGPoint(x: x, y: plot.minY))
@@ -102,6 +109,7 @@ struct SpectrumPlotView: View {
             let normalizedX = Double(point) / Double(pointCount - 1)
             let frequency = FrequencyScale.frequency(
                 at: normalizedX,
+                minimum: minimumFrequency,
                 maximum: maximumFrequency
             )
             let decibels = interpolatedMagnitude(at: frequency)
@@ -161,6 +169,7 @@ struct SpectrumPlotView: View {
     private func xPosition(frequency: Double, plot: CGRect) -> CGFloat {
         let normalized = FrequencyScale.normalizedPosition(
             for: frequency,
+            minimum: minimumFrequency,
             maximum: maximumFrequency
         )
         return plot.minX + CGFloat(normalized) * plot.width

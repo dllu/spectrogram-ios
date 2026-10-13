@@ -15,6 +15,11 @@ struct SpectrogramUniforms {
     float fftSize;
     float minimumFrequency;
     float maximumFrequency;
+    float rowOffset;
+    float displayFloor;
+    float displayCeiling;
+    float contrast;
+    float bottomFadeFraction;
 };
 
 vertex VertexOutput spectrogramVertex(uint vertexID [[vertex_id]]) {
@@ -67,21 +72,39 @@ fragment float4 spectrogramFragment(
     const float binPosition = frequency * uniforms.fftSize / uniforms.sampleRate;
     const float textureX = (binPosition + 0.5) / float(uniforms.textureWidth);
 
-    const float age = (1.0 - saturate(input.textureCoordinate.y)) * float(uniforms.validRows - 1);
-    const uint rowAge = uint(round(age));
-    const uint physicalRow = (
-        uniforms.latestRow + uniforms.textureHeight - (rowAge % uniforms.textureHeight)
-    ) % uniforms.textureHeight;
-    const float textureY = (float(physicalRow) + 0.5) / float(uniforms.textureHeight);
+    // Use a fixed time span from the first frame onward. Newest uploaded rows
+    // sit above the visible timeline until the display-rate tween reaches them.
+    const float age = saturate(input.textureCoordinate.y)
+        * float(uniforms.textureHeight - 1) + uniforms.rowOffset;
+    if (age > float(uniforms.validRows - 1)) {
+        return float4(0.002, 0.002, 0.004, 1.0);
+    }
+    const uint youngerAge = uint(floor(age));
+    const uint olderAge = min(youngerAge + 1, uniforms.validRows - 1);
+    const uint youngerRow = (uniforms.latestRow + uniforms.textureHeight
+        - (youngerAge % uniforms.textureHeight)) % uniforms.textureHeight;
+    const uint olderRow = (uniforms.latestRow + uniforms.textureHeight
+        - (olderAge % uniforms.textureHeight)) % uniforms.textureHeight;
 
     constexpr sampler linearSampler(
         coord::normalized,
         address::clamp_to_edge,
         filter::linear
     );
-    const float intensity = spectrumTexture.sample(
-        linearSampler,
-        float2(textureX, textureY)
-    ).r;
-    return float4(inferno(intensity), 1.0);
+    // Sample rows separately so interpolation never crosses the ring-buffer
+    // seam into an unrelated frame or uninitialized memory.
+    const float younger = spectrumTexture.sample(linearSampler,
+        float2(textureX, (float(youngerRow) + 0.5) / float(uniforms.textureHeight))).r;
+    const float older = spectrumTexture.sample(linearSampler,
+        float2(textureX, (float(olderRow) + 0.5) / float(uniforms.textureHeight))).r;
+    const float decibels = mix(younger, older, fract(age)) * 120.0 - 120.0;
+    const float normalized = saturate((decibels - uniforms.displayFloor)
+        / (uniforms.displayCeiling - uniforms.displayFloor));
+    const float intensity = pow(normalized, uniforms.contrast);
+    // Old rows are discarded discretely by the ring buffer. A fixed 16-point
+    // fade at the oldest edge hides that boundary while keeping the newest
+    // rows at the top at full contrast.
+    const float fade = smoothstep(0.0, uniforms.bottomFadeFraction,
+        1.0 - saturate(input.textureCoordinate.y));
+    return float4(mix(float3(0.002, 0.002, 0.004), inferno(intensity), fade), 1.0);
 }

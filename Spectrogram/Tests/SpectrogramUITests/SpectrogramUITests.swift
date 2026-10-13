@@ -25,6 +25,7 @@ final class SpectrogramUITests: XCTestCase {
 
         let plot = app.otherElements["spectrum-plot"]
         XCTAssertTrue(plot.waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["selected-musical-note"].label.contains("A4"))
         XCTAssertEqual(captureButton.label, "Resume")
 
         coordinate(for: 1_000, in: plot).tap()
@@ -70,6 +71,35 @@ final class SpectrogramUITests: XCTestCase {
         saveScreenshot(named: "Landscape spectrum detail")
     }
 
+    func testDisplaySettingsCanChangeRange() {
+        app.buttons["display-settings"].tap()
+        let minimum = app.buttons["minimum-frequency"]
+        XCTAssertTrue(minimum.waitForExistence(timeout: 3))
+        minimum.tap()
+        app.buttons["50.0 Hz"].tap()
+        XCTAssertTrue(minimum.label.contains("50.0 Hz"))
+        app.buttons["close-display-settings"].tap()
+        let waterfall = app.otherElements["spectrogram-waterfall"]
+        waterfall.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7)).tap()
+        XCTAssertTrue(app.otherElements["spectrum-plot"].waitForExistence(timeout: 3))
+        saveScreenshot(named: "Configured frequency range")
+    }
+
+    func testNewestSliceIsAtTopAndRulerDoesNotCoverWaterfall() {
+        let waterfall = app.otherElements["spectrogram-waterfall"]
+        let ruler = app.otherElements["waterfall-frequency-axis"]
+        XCTAssertTrue(waterfall.waitForExistence(timeout: 5))
+        XCTAssertTrue(ruler.exists)
+        XCTAssertLessThanOrEqual(ruler.frame.maxY, waterfall.frame.minY + 1)
+        waterfall.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0)).tap()
+        XCTAssertTrue(app.staticTexts["Newest slice"].waitForExistence(timeout: 3))
+        app.buttons["close-spectrum-detail"].tap()
+        waterfall.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.95)).tap()
+        XCTAssertFalse(app.staticTexts["Newest slice"].exists)
+        XCTAssertTrue(app.otherElements["spectrum-plot"].exists)
+        saveScreenshot(named: "Newest at top with octave ruler")
+    }
+
     override func tearDownWithError() throws {
         XCUIDevice.shared.orientation = .portrait
     }
@@ -82,7 +112,7 @@ final class SpectrogramUITests: XCTestCase {
     }
 
     private func coordinate(for frequency: Double, in plot: XCUIElement) -> XCUICoordinate {
-        let normalizedFrequency = log(frequency / 20) / log(20_000 / 20)
+        let normalizedFrequency = log(frequency / 32) / log(16_000 / 32)
         let x = 42 + (plot.frame.width - 54) * normalizedFrequency
         return plot.coordinate(withNormalizedOffset: CGVector(dx: x / plot.frame.width, dy: 0.5))
     }

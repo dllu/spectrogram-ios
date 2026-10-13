@@ -32,6 +32,7 @@ targets:
     sources:
       - path: Spectrogram/Sources/SpectrogramApp
       - path: Spectrogram/Resources/Assets.xcassets
+      - path: Spectrogram/Resources/PrivacyInfo.xcprivacy
     dependencies:
       - target: SpectrogramCore
     settings:

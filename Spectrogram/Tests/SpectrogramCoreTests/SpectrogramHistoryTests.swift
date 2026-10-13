@@ -15,15 +15,15 @@ final class SpectrogramHistoryTests: XCTestCase {
         XCTAssertNil(history.frame(age: 3))
     }
 
-    func testVerticalSelectionRunsOldestToNewest() {
+    func testVerticalSelectionRunsNewestToOldest() {
         let history = SpectrogramHistory(capacity: 5)
         for timestamp in 0..<5 {
             history.append(frame(timestamp: Double(timestamp)))
         }
 
-        XCTAssertEqual(history.frame(normalizedYFromTop: 0)?.timestamp, 0)
+        XCTAssertEqual(history.frame(normalizedYFromTop: 0)?.timestamp, 4)
         XCTAssertEqual(history.frame(normalizedYFromTop: 0.5)?.timestamp, 2)
-        XCTAssertEqual(history.frame(normalizedYFromTop: 1)?.timestamp, 4)
+        XCTAssertEqual(history.frame(normalizedYFromTop: 1)?.timestamp, 0)
     }
 
     func testIncrementalFramesSurviveReaderFallingBehind() {

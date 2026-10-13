@@ -36,6 +36,12 @@
 		E8C2F2CCC5B0E79AB550E0F7 /* SpectrumPeak.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A4518AABAE668ECBF12F6 /* SpectrumPeak.swift */; };
 		F6592B88EE848C8E0196BB17 /* libSpectrogramCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E293BC018F4CC590D4FAE6 /* libSpectrogramCore.a */; };
 		FB613D66B8076DC22A27A396 /* libSpectrogramCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E293BC018F4CC590D4FAE6 /* libSpectrogramCore.a */; };
+		0C1FB281B27C4812BF2EAEB5 /* FrequencyRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23603718636B4163B34E91CD /* FrequencyRange.swift */; };
+		E9D614E0FB9440D78965BF85 /* MusicalNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5448D0E36DD6405E9841A701 /* MusicalNote.swift */; };
+		17978739856E42808ECE501E /* SpectrogramScrollClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 467DD1F8156549E0AF3C2AF4 /* SpectrogramScrollClock.swift */; };
+		B212A8843731414E895CDB8A /* DisplaySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB862E89C00C46A9898B9035 /* DisplaySettingsView.swift */; };
+		FC861D3ADCB64B46842F885D /* DisplayMathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65711E8418704A368AA5E521 /* DisplayMathTests.swift */; };
+		494FC5B1EE3F48DCA51857C7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 566CB9887BE14C0AB1AB908D /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +108,12 @@
 		D9026A9264922C0890FBB3E0 /* FrequencyScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyScale.swift; sourceTree = "<group>"; };
 		E42A5C400E04D48BF920994D /* MetalSpectrogramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalSpectrogramView.swift; sourceTree = "<group>"; };
 		EC07E8B17DA39C071DF52A61 /* ControlBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBar.swift; sourceTree = "<group>"; };
+		23603718636B4163B34E91CD /* FrequencyRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrequencyRange.swift; sourceTree = "<group>"; };
+		5448D0E36DD6405E9841A701 /* MusicalNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalNote.swift; sourceTree = "<group>"; };
+		467DD1F8156549E0AF3C2AF4 /* SpectrogramScrollClock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrogramScrollClock.swift; sourceTree = "<group>"; };
+		FB862E89C00C46A9898B9035 /* DisplaySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySettingsView.swift; sourceTree = "<group>"; };
+		65711E8418704A368AA5E521 /* DisplayMathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayMathTests.swift; sourceTree = "<group>"; };
+		566CB9887BE14C0AB1AB908D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +141,7 @@
 			children = (
 				CFA07138E1352246252D8A0E /* ContentView.swift */,
 				EC07E8B17DA39C071DF52A61 /* ControlBar.swift */,
+				FB862E89C00C46A9898B9035 /* DisplaySettingsView.swift */,
 				4D668E0381CA0A1B8B97C4E8 /* FrequencyAxisOverlay.swift */,
 				49ECF1E956CD8027FC360E41 /* SpectrogramPane.swift */,
 				443E63761FDA5A92A6851042 /* SpectrumDetailView.swift */,
@@ -186,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				5119D46DD31C1B0700BD7CC6 /* FrequencyScaleTests.swift */,
+				65711E8418704A368AA5E521 /* DisplayMathTests.swift */,
 				2AA4092F5BA5CC6638FDCDEE /* PeakDetectorTests.swift */,
 				6FC639F6533A1DE03725B7CC /* SpectrogramHistoryTests.swift */,
 			);
@@ -206,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				921E2C8A0B269967C2C533FD /* Assets.xcassets */,
+				566CB9887BE14C0AB1AB908D /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -226,6 +241,9 @@
 			isa = PBXGroup;
 			children = (
 				D9026A9264922C0890FBB3E0 /* FrequencyScale.swift */,
+				467DD1F8156549E0AF3C2AF4 /* SpectrogramScrollClock.swift */,
+				5448D0E36DD6405E9841A701 /* MusicalNote.swift */,
+				23603718636B4163B34E91CD /* FrequencyRange.swift */,
 				6BB12C477C04AB82C949A89C /* SpectralFrame.swift */,
 				B830B7D716849D6FD9FBC766 /* SpectrogramHistory.swift */,
 				C63A4518AABAE668ECBF12F6 /* SpectrumPeak.swift */,
@@ -416,6 +434,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C033E736DB587CDD9214CBA2 /* Assets.xcassets in Resources */,
+				494FC5B1EE3F48DCA51857C7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,6 +468,7 @@
 				044A60E0D5B1867DBFDF5118 /* CapturePhase.swift in Sources */,
 				AF5DC24D8149DAE11C015F85 /* ContentView.swift in Sources */,
 				BA591553B5D7CF9C02894150 /* ControlBar.swift in Sources */,
+				B212A8843731414E895CDB8A /* DisplaySettingsView.swift in Sources */,
 				CE6ED5693E1858B2891EC413 /* FFTFrameProcessor.swift in Sources */,
 				B58EDE295DCD3A30F342C988 /* FrequencyAxisOverlay.swift in Sources */,
 				02710254E2969CD15137FB83 /* MetalSpectrogramView.swift in Sources */,
@@ -478,6 +498,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				44AB0BF4A1908A3EF8A45F74 /* FrequencyScale.swift in Sources */,
+				17978739856E42808ECE501E /* SpectrogramScrollClock.swift in Sources */,
+				E9D614E0FB9440D78965BF85 /* MusicalNote.swift in Sources */,
+				0C1FB281B27C4812BF2EAEB5 /* FrequencyRange.swift in Sources */,
 				68275ADF0563968A1798695D /* SpectralFrame.swift in Sources */,
 				E5050B340D42714E220C213E /* SpectrogramHistory.swift in Sources */,
 				E8C2F2CCC5B0E79AB550E0F7 /* SpectrumPeak.swift in Sources */,
@@ -489,6 +512,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A7CEC8A1612FA6CBD71AF18F /* FrequencyScaleTests.swift in Sources */,
+				FC861D3ADCB64B46842F885D /* DisplayMathTests.swift in Sources */,
 				BB03845786F1AE994A2AC642 /* PeakDetectorTests.swift in Sources */,
 				DFA864E5335DF4F3BAD18CE6 /* SpectrogramHistoryTests.swift in Sources */,
 			);

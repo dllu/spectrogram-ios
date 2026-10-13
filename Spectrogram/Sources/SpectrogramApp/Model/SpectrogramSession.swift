@@ -9,7 +9,25 @@ final class SpectrogramSession: ObservableObject {
 
     let history = SpectrogramHistory(capacity: historyCapacity)
 
-    @Published private(set) var phase: CapturePhase = .idle
+    let scrollClock = SpectrogramScrollClock()
+    @Published private(set) var phase: CapturePhase = .idle {
+        didSet { scrollClock.setRunning(phase.isCapturing) }
+    }
+    @Published var frequencyRange = FrequencyRange.standard {
+        didSet {
+            if !isUITesting {
+                UserDefaults.standard.set(frequencyRange.minimum, forKey: "frequencyMinimum")
+                UserDefaults.standard.set(frequencyRange.maximum, forKey: "frequencyMaximum")
+            }
+            refreshPeaks()
+        }
+    }
+    @Published var displayFloor = -90.0 {
+        didSet { if !isUITesting { UserDefaults.standard.set(displayFloor, forKey: "displayFloor") } }
+    }
+    @Published var contrast = 1.35 {
+        didSet { if !isUITesting { UserDefaults.standard.set(contrast, forKey: "displayContrast") } }
+    }
     @Published private(set) var latestPeak: SpectrumPeak?
     @Published private(set) var framesCaptured = 0
     @Published var selection: SpectrumSelection?
@@ -28,19 +46,24 @@ final class SpectrogramSession: ObservableObject {
 #else
         isUITesting = false
 #endif
+        if !isUITesting {
+            let defaults = UserDefaults.standard
+            frequencyRange = FrequencyRange(
+                minimum: defaults.object(forKey: "frequencyMinimum") as? Double ?? 32,
+                maximum: defaults.object(forKey: "frequencyMaximum") as? Double ?? 16_000
+            )
+            displayFloor = min(max(defaults.object(forKey: "displayFloor") as? Double ?? -90, -120), -60)
+            contrast = min(max(defaults.object(forKey: "displayContrast") as? Double ?? 1.35, 0.75), 2)
+        }
         let history = self.history
         analyzer.onFrame = { [weak self, history] frame, shouldPublish in
             let generation = history.generation
             let storedFrame = history.append(frame)
             guard shouldPublish else { return }
-            let peak = PeakDetector.strongestPeak(
-                in: storedFrame,
-                maximumFrequency: FrequencyScale.displayMaximum(nyquist: storedFrame.nyquistFrequency)
-            )
             DispatchQueue.main.async { [weak self] in
                 guard let self, self.phase.isCapturing,
                       history.generation == generation else { return }
-                self.latestPeak = peak
+                self.latestPeak = self.strongestPeak(in: storedFrame)
                 self.framesCaptured = history.count
             }
         }
@@ -65,25 +88,42 @@ final class SpectrogramSession: ObservableObject {
             return
         }
 
-        switch AVAudioSession.sharedInstance().recordPermission {
-        case .granted:
-            startCapture()
-        case .denied:
-            phase = .permissionDenied
-        case .undetermined:
-            phase = .requestingPermission
-            AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
-                DispatchQueue.main.async {
-                    guard let self else { return }
-                    if granted {
-                        self.startCapture()
-                    } else {
-                        self.phase = .permissionDenied
-                    }
-                }
+        if #available(iOS 17.0, *) {
+            let permission = AVAudioApplication.shared.recordPermission
+            handlePermission(granted: permission == .granted, denied: permission == .denied)
+        } else {
+            handleLegacyPermission()
+        }
+    }
+
+    private func handlePermission(granted: Bool, denied: Bool) {
+        if granted { startCapture(); return }
+        if denied { phase = .permissionDenied; return }
+        phase = .requestingPermission
+        Task { @MainActor [weak self] in
+            let granted: Bool
+            if #available(iOS 17.0, *) {
+                granted = await AVAudioApplication.requestRecordPermission()
+            } else {
+                granted = await self?.requestLegacyPermission() ?? false
             }
-        @unknown default:
-            phase = .permissionDenied
+            guard let self else { return }
+            if granted { self.startCapture() } else { self.phase = .permissionDenied }
+        }
+    }
+
+    @available(iOS, introduced: 16.0, deprecated: 17.0)
+    private func handleLegacyPermission() {
+        let permission = AVAudioSession.sharedInstance().recordPermission
+        handlePermission(granted: permission == .granted, denied: permission == .denied)
+    }
+
+    @available(iOS, introduced: 16.0, deprecated: 17.0)
+    private func requestLegacyPermission() async -> Bool {
+        await withCheckedContinuation { continuation in
+            AVAudioSession.sharedInstance().requestRecordPermission { granted in
+                continuation.resume(returning: granted)
+            }
         }
     }
 
@@ -103,10 +143,7 @@ final class SpectrogramSession: ObservableObject {
         phase = .paused
         framesCaptured = history.count
         if let frame = history.latest() {
-            latestPeak = PeakDetector.strongestPeak(
-                in: frame,
-                maximumFrequency: FrequencyScale.displayMaximum(nyquist: frame.nyquistFrequency)
-            )
+            latestPeak = strongestPeak(in: frame)
         }
     }
 
@@ -126,28 +163,28 @@ final class SpectrogramSession: ObservableObject {
     }
 
     func selectSlice(normalizedYFromTop y: Double) {
-        if phase == .running {
-            pause()
-        }
         let clampedY = min(max(y, 0), 1)
-        guard let frame = history.frame(normalizedYFromTop: clampedY) else { return }
+        guard let position = scrollClock.position() else { return }
+        let sequence = (position - clampedY * Double(history.capacity - 1)).rounded()
+        guard sequence >= 1, let frame = history.frame(sequence: UInt64(sequence)) else { return }
 
-        let maximum = FrequencyScale.displayMaximum(nyquist: frame.nyquistFrequency)
+        if phase == .running { pause() }
         selection = SpectrumSelection(
             frame: frame,
-            peak: PeakDetector.strongestPeak(in: frame, maximumFrequency: maximum),
+            peak: strongestPeak(in: frame),
             tappedNormalizedY: clampedY
         )
     }
 
     func selectPeak(normalizedX: Double) {
         guard var selection else { return }
-        let maximum = FrequencyScale.displayMaximum(nyquist: selection.frame.nyquistFrequency)
-        let frequency = FrequencyScale.frequency(at: normalizedX, maximum: maximum)
+        let range = frequencyRange.limited(to: selection.frame.nyquistFrequency)
+        let frequency = FrequencyScale.frequency(at: normalizedX, minimum: range.minimum, maximum: range.maximum)
         let peak = PeakDetector.nearestPeak(
             to: frequency,
             in: selection.frame,
-            maximumFrequency: maximum
+            minimumFrequency: range.minimum,
+            maximumFrequency: range.maximum
         )
         guard peak != selection.peak else { return }
         selection.peak = peak
@@ -160,6 +197,7 @@ final class SpectrogramSession: ObservableObject {
 
     func clearHistory() {
         history.clear()
+        scrollClock.reset()
         framesCaptured = 0
         latestPeak = nil
         selection = nil
@@ -223,7 +261,7 @@ final class SpectrogramSession: ObservableObject {
             templates.append(magnitudes)
         }
 
-        for row in 0..<192 {
+        for row in 0..<Self.historyCapacity {
             history.append(
                 SpectralFrame(
                     timestamp: Double(row) * timeStep,
@@ -236,10 +274,20 @@ final class SpectrogramSession: ObservableObject {
 
         framesCaptured = history.count
         if let frame = history.latest() {
-            latestPeak = PeakDetector.strongestPeak(
-                in: frame,
-                maximumFrequency: FrequencyScale.defaultMaximum
-            )
+            latestPeak = strongestPeak(in: frame)
+        }
+    }
+
+    private func strongestPeak(in frame: SpectralFrame) -> SpectrumPeak? {
+        let range = frequencyRange.limited(to: frame.nyquistFrequency)
+        return PeakDetector.strongestPeak(in: frame, minimumFrequency: range.minimum, maximumFrequency: range.maximum)
+    }
+
+    private func refreshPeaks() {
+        if let frame = history.latest() { latestPeak = strongestPeak(in: frame) }
+        if var selected = selection {
+            selected.peak = strongestPeak(in: selected.frame)
+            selection = selected
         }
     }
 

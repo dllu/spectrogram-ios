@@ -2,6 +2,7 @@ import SpectrogramCore
 import SwiftUI
 
 struct ControlBar: View {
+    @State private var showingSettings = false
     @ObservedObject var session: SpectrogramSession
 
     var body: some View {
@@ -32,6 +33,14 @@ struct ControlBar: View {
 
             Spacer(minLength: 8)
 
+            Button { showingSettings = true } label: {
+                Image(systemName: "slider.horizontal.3").frame(width: 44, height: 44)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
+            .accessibilityLabel("Display settings")
+            .accessibilityIdentifier("display-settings")
+
             Button {
                 session.clearHistory()
             } label: {
@@ -60,6 +69,9 @@ struct ControlBar: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
         .background(.bar)
+        .sheet(isPresented: $showingSettings) {
+            DisplaySettingsView(session: session).presentationDetents([.medium, .large])
+        }
     }
 
     private var canToggle: Bool {
