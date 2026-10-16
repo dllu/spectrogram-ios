@@ -1,0 +1,25 @@
+Name: Simple Spectrogram
+Subtitle: Live audio spectrum & notes
+Category: Utilities
+Version: 1.0
+Price: Free
+
+Description:
+See the frequencies in the sound around you. Spectrogram turns your microphone input into a smooth, real-time spectrogram with a clear logarithmic frequency scale and Inferno colors.
+
+• Watch sound evolve over time, with the newest audio at the top.
+• Pause and tap any slice to inspect its frequency spectrum.
+• Tap or drag on the spectrum to find nearby peaks and their exact frequencies.
+• See the nearest musical note and the difference in hertz and cents, referenced to A4 = 440 Hz.
+• Adjust the frequency range, noise floor, and contrast.
+• Use portrait or landscape on iPhone and iPad.
+
+Audio is analyzed on your device in memory. It is never recorded, uploaded, or shared. No account, ads, or tracking.
+
+Musical note labels describe individual spectral peaks, which may be harmonics rather than a sound’s fundamental frequency.
+
+Keywords:
+spectrogram,spectrum,audio,sound,frequency,fft,microphone,music,note,analyzer
+
+Review notes:
+No sign-in is required. Allow microphone access to display the live spectrogram. Tap pause to freeze it; tap a horizontal slice to open its spectrum, then tap or drag on the plot to select a peak. Display settings are available through the sliders button. All audio processing is on-device; audio is not saved or transmitted.
