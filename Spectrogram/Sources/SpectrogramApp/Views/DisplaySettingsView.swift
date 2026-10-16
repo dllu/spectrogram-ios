@@ -40,6 +40,12 @@ struct DisplaySettingsView: View {
                     session.displayFloor = -90
                     session.contrast = 1.35
                 }
+                Section("Privacy & support") {
+                    Text("Audio is analyzed on your device in memory. It is never recorded or uploaded. No data is collected.")
+                        .font(.footnote).foregroundStyle(.secondary)
+                    Link("Privacy policy", destination: URL(string: "https://github.com/dllu/spectrogram-ios/blob/main/Docs/AppStore/Privacy.md")!)
+                    Link("Help & support", destination: URL(string: "https://github.com/dllu/spectrogram-ios/blob/main/Docs/AppStore/Support.md")!)
+                }
             }
             .navigationTitle("Display")
             .navigationBarTitleDisplayMode(.inline)

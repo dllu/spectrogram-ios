@@ -24,6 +24,8 @@
 	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Spectrogram uses the microphone to display sound frequencies in real time. Audio never leaves your device.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
