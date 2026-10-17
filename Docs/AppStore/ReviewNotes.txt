@@ -1,7 +1,7 @@
 Simple Spectrogram 1.0 (build 2): information requested under Guideline 2.1.
 
 1. Physical-device demonstration
-The attached recordings and screenshot show live microphone analysis, pause/resume, inspection of a selected time slice, selection of frequency peaks with musical-note and tuning-offset labels, and changes to frequency range and contrast. The device is an iPhone 14 Pro Max running iOS 27.2. No registration, login, account deletion, shared user-generated content, paid content, or in-app purchases exist in this app.
+The attached launch recording, ScreenRecording_10-16-2026 20-40-47_1.mp4, starts on the physical device Home Screen, launches the app, and shows live microphone analysis. Additional recordings and a screenshot in our App Review reply show live microphone analysis, pause/resume, inspection of a selected time slice, selection of frequency peaks with musical-note and tuning-offset labels, and changes to frequency range and contrast. The device is an iPhone 14 Pro Max running iOS 27.2. No registration, login, account deletion, shared user-generated content, paid content, or in-app purchases exist in this app.
 
 2. Purpose and audience
 Simple Spectrogram is a free, general-purpose sound visualization utility for musicians, students, audio enthusiasts, and anyone curious about surrounding sounds. It turns microphone input into a real-time frequency-versus-time display and lets users inspect the intensity and exact frequency of spectral peaks. It helps users see tones, harmonics, and changes in sound that are difficult to identify by listening alone. It is available to the general public, not restricted to employees, organizations, or business customers.
