@@ -1,0 +1,19 @@
+Simple Spectrogram 1.0 (build 2): information requested under Guideline 2.1.
+
+1. Physical-device demonstration
+The attached recordings and screenshot show live microphone analysis, pause/resume, inspection of a selected time slice, selection of frequency peaks with musical-note and tuning-offset labels, and changes to frequency range and contrast. The device is an iPhone 14 Pro Max running iOS 27.2. No registration, login, account deletion, shared user-generated content, paid content, or in-app purchases exist in this app.
+
+2. Purpose and audience
+Simple Spectrogram is a free, general-purpose sound visualization utility for musicians, students, audio enthusiasts, and anyone curious about surrounding sounds. It turns microphone input into a real-time frequency-versus-time display and lets users inspect the intensity and exact frequency of spectral peaks. It helps users see tones, harmonics, and changes in sound that are difficult to identify by listening alone. It is available to the general public, not restricted to employees, organizations, or business customers.
+
+3. Setup and main features
+Open the app and allow microphone access when prompted. Live analysis begins automatically. Make a sound near the microphone to see the spectrogram respond. Tap pause/play to freeze/resume it. Tap a horizontal slice to freeze that time and open its intensity-versus-frequency plot. Tap or drag on the plot to select a nearby peak; the app shows its frequency, level, nearest equal-tempered note (A4 = 440 Hz), and difference in cents and hertz. Close the detail panel with its X. Use the sliders button to change the frequency range, noise floor, or contrast, and Done to return. The trash button clears displayed history. No login credentials, sample files, accessories, subscriptions, or server setup are needed. If microphone access was denied, enable it for Spectrogram in iOS Settings.
+
+4. External services and platforms
+There are no external services or third-party runtime SDKs for core functionality: no backend, data provider, authentication service, payment processor, advertising, analytics, or AI service. The app uses Apple's on-device AVFoundation/AVAudioEngine, Accelerate, Metal, and SwiftUI frameworks. Audio is processed in memory and is never recorded or transmitted. Display preferences are stored locally. Optional privacy-policy and support links open public GitHub project pages; these are not needed for sound analysis. The app works offline.
+
+5. Regions
+Features and content are consistent across all distribution regions. There is no regional login, content restriction, pricing tier, or service dependency. The interface is in English.
+
+6. Regulated services and protected material
+The app is a general-purpose audio visualizer. It does not provide regulated financial, medical, gambling, or other regulated services, and it does not supply or distribute protected third-party content. No industry licenses, service credentials, or third-party content authorizations are applicable.
