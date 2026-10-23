@@ -1,6 +1,10 @@
-# Spectrogram for iOS
+# Simple Spectrogram for iOS
 
 A focused real-time microphone spectrogram for iPhone and iPad. It uses a logarithmic frequency axis and the Inferno color map by default, with no network access or third-party runtime dependencies.
+
+[Download on the App Store](https://apps.apple.com/us/app/simple-spectrogram/id6823407210)
+
+<img src="IMG_1072.PNG" alt="Simple Spectrogram showing the waterfall and an intensity-versus-frequency plot with a selected peak at 1.954 kHz" width="360">
 
 ## Using the app
 
@@ -21,7 +25,7 @@ Metal batches new spectra into command-buffer texture uploads. During capture, a
 
 ## Building
 
-Requirements: Xcode 16 or later and XcodeGen.
+Requirements: Xcode 26 or later and XcodeGen. CI uses Xcode 26.3.
 
 ```sh
 brew install xcodegen

@@ -9,8 +9,13 @@ jobs:
   build-and-test:
     runs-on: macos-15
     timeout-minutes: 20
+    env:
+      # The runner defaults to Xcode 16.4, whose SDK lacks allowBluetoothHFP.
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
+      - name: Show Xcode version
+        run: xcodebuild -version
       - name: Install project generator
         run: brew install xcodegen
       - name: Generate Xcode project
